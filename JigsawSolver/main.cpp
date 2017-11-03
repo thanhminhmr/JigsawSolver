@@ -1,5 +1,7 @@
 // main.cpp
 
+#include "std.h"
+
 int main() {
-	return 0;
+	return sizeof(Piece);
 }
