@@ -7,9 +7,12 @@
 #include <stdio.h>
 #include <stdint.h>
 
+// add library here
+#include "misc.h"
 
-// add files here
+// add class here
 #include "Point.h"
 #include "Piece.h"
+#include "Board.h"
 
 #endif // !_STD_H_

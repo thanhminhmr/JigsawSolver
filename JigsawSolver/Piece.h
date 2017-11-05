@@ -4,36 +4,41 @@
 /**
 * Piece.h
 *
-* Define a Piece with maximum 126 Point (total size 512 bytes)
+* Define a Piece
 *
-* ! read - write
-* ! internal modify only
+* ! initialize on create
+* ! read - only
 */
-// template <size_t MAX_SIZE>
+template <size_t MAX_SIZE>
 class Piece {
-	static const size_t MAX_SIZE = 128;
+	//static const size_t MAX_SIZE = 16;
+private:
+	// copy constructor
+	inline Piece(const Piece& piece) {}
+
 protected:
 	Point* point;
 	size_t size;
 
-	// internal copy
-	inline void copy(const Point* _point) {
+	// allocate
+	static inline Point* _alloc(size_t size) {
 		// TODO: aligned alloc @thanhminhmr
-		point = new Point[MAX_SIZE];
-		for (size_t i = 0; i < size; i++) {
-			point[i] = _point[i];
-		}
+		return new Point[size];
+	}
+
+	// deallocate
+	static inline void _dealloc(Point* point) {
+		// TODO: aligned dealloc @thanhminhmr
+		delete[] point;
 	}
 
 	// normalize this Piece
-	inline void normalize() {
-		// TODO: implement this
-	}
+	static inline void normalize(Point* point_out, const Point* point_in, size_t size);
 
 public:
 	// default destructor
 	inline ~Piece() {
-		delete[] point;
+		_dealloc(point);
 	}
 
 	// default constructor
@@ -42,30 +47,21 @@ public:
 	// constructor
 	inline Piece(const Point* _point, size_t _size) : point(NULL), size(_size) {
 		assert(size <= MAX_SIZE);
-		copy(_point);
-	}
-
-	// copy constructor
-	inline Piece(const Piece&& piece) {
-		size = piece.size;
-		copy(piece.point);
+		point = _alloc(MAX_SIZE);
+		normalize(point, _point, size);
 	}
 
 	// copy
 	inline void operator=(const Piece& piece) {
 		size = piece.size;
-		copy(piece.point);
-	}
-
-	// Subtract this Piece with a Piece into new Piece
-	inline Piece subtract(const Piece& piece) const {
-		// TODO: implement this
-	}
-
-	// Merge two Piece into new Piece
-	inline Piece merge(const Piece& piece) const {
-		// TODO: do we need this?
+		point = _alloc(MAX_SIZE);
+		memcopy(point, piece.point, size);
 	}
 };
 
+// normalize this Piece
+template<size_t MAX_SIZE>
+inline void Piece<MAX_SIZE>::normalize(Point * point_out, const Point * point_in, size_t size) {
+	// TODO: implement this
+}
 #endif // !_PIECE_H_
