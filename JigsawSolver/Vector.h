@@ -19,9 +19,12 @@ public:
 	inline Vector(int8_t x, int8_t y) : x(x), y(y) {}
 	// constructor, create vector AB
 	inline Vector(Point a, Point b) : x(b.x - a.x), y(b.y - a.y) {}
-	
-	// copy
-	// the default copy is good enough, no need to write a new one
+	// copy constructor
+	inline Vector(const Vector& v) : x(v.x), y(v.y) {}
+	// copy operator
+	inline void operator=(const Vector& v) {
+		new(this) Vector(v);
+	}
 
 	// move a Point with this Vector
 	inline Point move(const Point& p) const {

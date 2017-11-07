@@ -17,8 +17,12 @@ public:
 	inline Point() : x(0), y(0) {}
 	// constructor
 	inline Point(int8_t x, int8_t y) : x(x), y(y) {}
-	// copy
-	// the default copy is good enough, no need to write a new one
+	// copy constructor
+	inline Point(const Point& p) : x(p.x), y(p.y) {}
+	// copy operator
+	inline void operator=(const Point& p) {
+		new(this) Point(p);
+	}
 
 	// misc, compare two Point
 	inline bool operator==(const Point& p) const {

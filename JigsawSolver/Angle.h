@@ -18,8 +18,12 @@ public:
 	inline Angle(Point prev, Point current, Point next) : start(current, next), end(current, prev) {}
 	// constructor, Angle 
 	inline Angle(Vector a, Vector b) : start(a), end(b) {}
-	// copy
-	// the default copy is good enough, no need to write a new one
+	// copy constructor
+	inline Angle(const Angle& p) : start(p.start), end(p.end) {}
+	// copy operator
+	inline void operator=(const Vector& v) {
+		new(this) Vector(v);
+	}
 
 	// get the angle between [-pi, +pi] radians
 	inline float toRad() const {

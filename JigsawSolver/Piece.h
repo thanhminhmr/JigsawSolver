@@ -9,13 +9,7 @@
 * ! initialize on create
 * ! read - only
 */
-template <size_t MAX_SIZE>
 class Piece {
-	//static const size_t MAX_SIZE = 16;
-private:
-	// copy constructor
-	inline Piece(const Piece& piece);
-
 protected:
 	Point* point;
 	Angle* angle;
@@ -45,25 +39,23 @@ public:
 	}
 
 	// default constructor
-	inline Piece() : point(NULL), size(0) {}
+	inline Piece() : point(NULL), angle(NULL), size(0) {}
 
 	// constructor
-	inline Piece(const Point* _point, size_t _size) : point(NULL), size(_size) {
+	inline Piece(const Point* _point, size_t _size) : point(NULL), angle(NULL), size(_size) {
 		point = _alloc<Point>(size);
 		normalize(point, _point, size);
 	}
 
-	// copy
-	inline void operator=(const Piece& piece) {
-		size = piece.size;
-		point = _alloc<Point>(MAX_SIZE);
+	// copy constructor
+	inline Piece(const Piece& piece) : point(NULL), angle(NULL), size(piece.size) {
+		point = _alloc<Point>(size);
 		memcopy(point, piece.point, size);
 	}
 };
 
 // normalize this Piece
-template<size_t MAX_SIZE>
-inline void Piece<MAX_SIZE>::normalize(Point * point_out, const Point * point_in, size_t size) {
+inline void Piece::normalize(Point* point_out, const Point* point_in, size_t size) {
 	// TODO: implement this
 }
 #endif // !_PIECE_H_
