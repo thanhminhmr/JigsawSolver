@@ -19,10 +19,11 @@ public:
 	// constructor, Angle 
 	inline Angle(Vector a, Vector b) : start(a), end(b) {}
 	// copy constructor
-	inline Angle(const Angle& p) : start(p.start), end(p.end) {}
+	inline Angle(const Angle& angle) : start(angle.start), end(angle.end) {}
 	// copy operator
-	inline void operator=(const Vector& v) {
-		new(this) Vector(v);
+	inline void operator=(const Angle& angle) {
+		this->~Angle();
+		new(this) Angle(angle);
 	}
 
 	// get the angle between [-pi, +pi] radians

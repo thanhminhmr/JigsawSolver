@@ -21,6 +21,7 @@ public:
 	inline Point(const Point& p) : x(p.x), y(p.y) {}
 	// copy operator
 	inline void operator=(const Point& p) {
+		this->~Point();
 		new(this) Point(p);
 	}
 

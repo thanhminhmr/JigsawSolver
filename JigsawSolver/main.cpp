@@ -23,6 +23,8 @@ int main() {
 		points[i] = Point(a, b);
 	}
 
+	Piece piece(points, 10);
+
 	return printf("%d %d", points[0].x, points[0].y);
 	// see the "/doc/test.png"
 }

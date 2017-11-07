@@ -14,19 +14,6 @@ protected:
 	Point* point;
 	Angle* angle;
 
-	// allocate
-	template<class Type>
-	static inline Point* _alloc(size_t size) {
-		// TODO: aligned alloc @thanhminhmr
-		return new Type[size];
-	}
-	// deallocate
-	template<class Type>
-	static inline void _dealloc(Type* type) {
-		// TODO: aligned dealloc @thanhminhmr
-		delete[] type;
-	}
-
 	// normalize this Piece
 	static inline void normalize(Point* point_out, const Point* point_in, size_t size);
 
@@ -35,27 +22,29 @@ public:
 
 	// default destructor
 	inline ~Piece() {
-		_dealloc(point);
+		memdealloc(point);
 	}
-
 	// default constructor
 	inline Piece() : point(NULL), angle(NULL), size(0) {}
-
 	// constructor
 	inline Piece(const Point* _point, size_t _size) : point(NULL), angle(NULL), size(_size) {
-		point = _alloc<Point>(size);
+		point = memalloc<Point>(size);
 		normalize(point, _point, size);
 	}
-
 	// copy constructor
 	inline Piece(const Piece& piece) : point(NULL), angle(NULL), size(piece.size) {
-		point = _alloc<Point>(size);
+		point = memalloc<Point>(size);
 		memcopy(point, piece.point, size);
+	}
+	// copy operator
+	inline void operator=(const Piece& piece) {
+		this->~Piece();
+		new(this) Piece(piece);
 	}
 };
 
 // normalize this Piece
 inline void Piece::normalize(Point* point_out, const Point* point_in, size_t size) {
-	// TODO: implement this
+	// TODO: do we need this?
 }
 #endif // !_PIECE_H_

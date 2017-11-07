@@ -23,6 +23,7 @@ public:
 	inline Vector(const Vector& v) : x(v.x), y(v.y) {}
 	// copy operator
 	inline void operator=(const Vector& v) {
+		this->~Vector();
 		new(this) Vector(v);
 	}
 

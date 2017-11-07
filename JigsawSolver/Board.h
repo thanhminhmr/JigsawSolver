@@ -9,18 +9,21 @@
 * ! initialize on create
 * ! read - only
 */
-class Board : public Piece {
-	//static const size_t MAX_SIZE = 128;
+class Board {
 private:
-	// copy constructor
-	inline Board(const Board& Board) {}
+	static const size_t MAX_SIZE = 16;
+
+protected:
+	Piece piece[MAX_SIZE];
 
 public:
 	// default constructor
-	inline Board() : Piece() {}
+	inline Board() {}
 
 	// constructor
-	inline Board(const Point* _point, size_t _size) : Piece(_point, _size) {}
+	inline Board(const Piece* _point, size_t _size) {
+		// TODO: implement this @thanhminhmr
+	}
 
 	// Subtract this Board with a Board into new Board
 	inline Board subtract(const Board& Board) const {
