@@ -14,28 +14,31 @@ class Piece {
 	//static const size_t MAX_SIZE = 16;
 private:
 	// copy constructor
-	inline Piece(const Piece& piece) {}
+	inline Piece(const Piece& piece);
 
 protected:
 	Point* point;
-	size_t size;
+	Angle* angle;
 
 	// allocate
+	template<class Type>
 	static inline Point* _alloc(size_t size) {
 		// TODO: aligned alloc @thanhminhmr
-		return new Point[size];
+		return new Type[size];
 	}
-
 	// deallocate
-	static inline void _dealloc(Point* point) {
+	template<class Type>
+	static inline void _dealloc(Type* type) {
 		// TODO: aligned dealloc @thanhminhmr
-		delete[] point;
+		delete[] type;
 	}
 
 	// normalize this Piece
 	static inline void normalize(Point* point_out, const Point* point_in, size_t size);
 
 public:
+	const size_t size;
+
 	// default destructor
 	inline ~Piece() {
 		_dealloc(point);
@@ -46,15 +49,14 @@ public:
 
 	// constructor
 	inline Piece(const Point* _point, size_t _size) : point(NULL), size(_size) {
-		assert(size <= MAX_SIZE);
-		point = _alloc(MAX_SIZE);
+		point = _alloc<Point>(size);
 		normalize(point, _point, size);
 	}
 
 	// copy
 	inline void operator=(const Piece& piece) {
 		size = piece.size;
-		point = _alloc(MAX_SIZE);
+		point = _alloc<Point>(MAX_SIZE);
 		memcopy(point, piece.point, size);
 	}
 };

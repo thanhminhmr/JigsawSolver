@@ -6,12 +6,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <math.h>
 
 // add library here
 #include "misc.h"
 
 // add class here
 #include "Point.h"
+#include "Vector.h"
+#include "Angle.h"
 #include "Piece.h"
 #include "Board.h"
 
