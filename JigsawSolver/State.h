@@ -39,7 +39,9 @@ istream& operator>>(istream& is, State &state) {
 
 ostream& operator<< (ostream& os, const State& state) {
 	Piece* pieces = state.pieces;
+	os << state.piece_count << endl;
 	for (int i = 0; i < state.piece_count; i++) {
+		os << i + 1 << " " << pieces[i].size << " ";
     for (int j = 0; j < pieces[i].size; j++) {
     	os << (int16_t) pieces[i].getPoints()[j].x << " " << (int16_t) pieces[i].getPoints()[j].y << " "; 
     }

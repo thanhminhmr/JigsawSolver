@@ -11,12 +11,12 @@
 */
 class Point {
 public:
-	const int8_t x, y;
+	const int16_t x, y;
 
 	// default constructor
 	inline Point() : x(0), y(0) {}
 	// constructor
-	inline Point(int8_t x, int8_t y) : x(x), y(y) {}
+	inline Point(int16_t x, int16_t y) : x(x), y(y) {}
 	// copy constructor
 	inline Point(const Point& p) : x(p.x), y(p.y) {}
 	// copy operator

@@ -15,9 +15,9 @@ public:
 	// default constructor
 	inline Angle() : start(), end() {}
 	// constructor
-	inline Angle(Point prev, Point current, Point next) : start(current, next), end(current, prev) {}
+	inline Angle(const Point& prev, const Point& current, const Point& next) : start(current, next), end(current, prev) {}
 	// constructor, Angle 
-	inline Angle(Vector a, Vector b) : start(a), end(b) {}
+	inline Angle(const Vector& a, const Vector& b) : start(a), end(b) {}
 	// copy constructor
 	inline Angle(const Angle& angle) : start(angle.start), end(angle.end) {}
 	// copy operator
@@ -34,16 +34,6 @@ public:
 		int32_t det = (int32_t) start.x * (int32_t) end.y - (int32_t) start.y * (int32_t) end.x;
 		// atan2(y, x) or atan2(sin, cos)
 		return atan2f((float) det, (float) dot);
-	}
-
-	// compare two Angle
-	// if two Angle have different start Vector, give assertion failed, otherwise
-	// if this Angle is bigger than input Angle, return 1
-	// if this Angle is smaller than input Angle, return -1
-	// if two Angle are exactly same, return 0
-	inline int compare(const Angle& input) {
-		assert(start == input.start);
-		return (end == input.end) ? 0 : (toRad() > input.toRad()) ? 1 : -1;
 	}
 };
 

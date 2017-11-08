@@ -14,9 +14,15 @@ State InOutStream::readFile(string filename) {
   else cout << "Unable to open file"; 
 }
 
+void InOutStream::printFile(State state, string filename)  {
+  ofstream out(filename);
+  out << state;
+}
+
 int main(int argc, char** argv){
-	InOutStream is;
-	State state = is.readFile("../Doc/de_1_rand_reformat.txt");
+	InOutStream io;
+	State state = io.readFile("../Doc/de_1_rand_reformat.txt");
+  io.printFile(state, "output.txt");
   cout << state;
 	return 0;
 }
