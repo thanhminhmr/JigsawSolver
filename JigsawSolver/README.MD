@@ -4,22 +4,16 @@ Thư mục chứa mã nguồn đang phát triển.
 
 ## Cấu trúc thư mục
 
-### Các cấu trúc dữ liệu
-
-main.cpp | Chứa chương trình chính
-
-### Các cấu trúc dữ liệu
-
-Point.h | Chứa một điểm
-Vector.h | Chứa một véc-tơ quay
-Angle.h | Chứa một góc, tạo thành bởi 2 véc-tơ quay
-Piece.h | Chửa một mảnh ghép, là danh sách các điểm và các góc theo chiều kim đồng hồ
-Board.h | Chứa một tập các mảnh ghép, là danh sách các chỗ trống còn lại trên bàn (hoặc là toàn bộ chỗ trống trên bàn)
-
-### Các chức năng hỗ trợ
-
-misc.h | Chứa các hàm dùng chung của chương trình
-std.h | Chứa thư viện chuẩn, các cấu trúc dữ liệu chương trình
+| Tên tệp | Chức năng |
+| --- | --- |
+| main.cpp | Chứa chương trình chính |
+| Point.h | Chứa một điểm |
+| Vector.h | Chứa một véc-tơ quay |
+| Angle.h | Chứa một góc, tạo thành bởi 2 véc-tơ quay |
+| Piece.h | Chửa một mảnh ghép, là danh sách các điểm và các góc theo chiều kim đồng hồ |
+| Board.h | Chứa một tập các mảnh ghép, là danh sách các chỗ trống còn lại trên bàn (hoặc là toàn bộ chỗ trống trên bàn) |
+| misc.h | Chứa các hàm dùng chung của chương trình |
+| std.h | Chứa thư viện chuẩn, các cấu trúc dữ liệu chương trình |
 
 ## Phương án phát triển
 
