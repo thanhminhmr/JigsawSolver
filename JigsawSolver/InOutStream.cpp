@@ -23,7 +23,7 @@ int main(int argc, char** argv){
 	InOutStream io;
 	State state = io.readFile("../Doc/de_1_rand_reformat.txt");
   io.printFile(state, "output.txt");
-  cout << state;
+  cout << state; //chua co ham get Point
 	return 0;
 }
 

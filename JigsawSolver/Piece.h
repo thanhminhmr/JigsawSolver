@@ -50,7 +50,7 @@ public:
 		new(this) Piece(piece);
 	}
 	inline Point* getPoints() {
-		return point;
+	//Toto
 	}
 };
 
