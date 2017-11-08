@@ -49,9 +49,7 @@ public:
 		this->~Piece();
 		new(this) Piece(piece);
 	}
-	inline Point* getPoints() {
-	//Toto
-	}
+	
 };
 
 // normalize this Piece

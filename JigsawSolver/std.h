@@ -10,10 +10,7 @@
 #include <stdint.h>
 #include <math.h>
 #include <new>
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <istream>
+
 
 // add library here
 #include "misc.h"
