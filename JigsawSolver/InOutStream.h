@@ -12,6 +12,7 @@ public:
 	inline void print(State state);
 };
 
+//read from file
 inline State InOutStream::readFile(const char* filename) {
   State state;
   Piece *pieces;
@@ -42,6 +43,7 @@ inline State InOutStream::readFile(const char* filename) {
   else printf("%s\n", "Unable to open file");
 }
 
+//print to console
 inline void InOutStream::print(State state)  {
   Piece* pieces = state.pieces;
   printf("%d\n", state.piece_count);
@@ -54,7 +56,8 @@ inline void InOutStream::print(State state)  {
   }
 }
 
- inline void InOutStream::printFile(State state, const char* filename) {
+//print to file
+inline void InOutStream::printFile(State state, const char* filename) {
  	FILE* out;
  	out = fopen(filename, "w");
  	

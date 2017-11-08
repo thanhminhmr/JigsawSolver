@@ -34,7 +34,8 @@ public:
 	inline Piece(const Point* _point, size_t _size)
 		: point(memalloc<Point>(_size)), angle(memalloc<Angle>(_size)), size(_size) {
 
-		normalize((Point*) point, _point, size);
+		//normalize((Point*) point, _point, size);
+		memcopy((Point*) point, _point, size);
 		createAngle((Angle*) angle, point, size);
 	}
 	// copy constructor
@@ -49,6 +50,9 @@ public:
 		this->~Piece();
 		new(this) Piece(piece);
 	}
+
+private:
+	static inline void createAngle(Angle& angle, Point a, Point b, Point c);
 	
 };
 
@@ -60,6 +64,19 @@ inline void Piece::normalize(Point* point_out, const Point* point_in, size_t siz
 // create Angle array from normalized Point array
 inline void Piece::createAngle(Angle * angle, const Point * point, size_t size) {
 	// TODO: implement this
+	createAngle(angle[0], point[size-1], point[0], point[1]);
+	for (int i = 0; i < size - 2; i ++) {
+		createAngle(angle[i + 1], point[i], point[i + 1], point[i + 2]);
+	}
+	createAngle(angle[size-1], point[size-2], point[size-1], point[0]);
+
+}
+//create Angle <b with vector ba, bc
+inline void Piece::createAngle(Angle& angle, Point a, Point b, Point c) {
+	Vector start(b,a);
+	Vector end(c,b);
+	Angle _angle(start, end);
+	angle = _angle;
 }
 
 #endif // !_PIECE_H_
