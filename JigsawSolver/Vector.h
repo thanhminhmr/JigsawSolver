@@ -11,12 +11,12 @@
 */
 class Vector {
 public:
-	const int8_t x, y;
+	const int16_t x, y;
 
 	// default constructor
 	inline Vector() : x(0), y(0) {}
 	// constructor
-	inline Vector(int8_t x, int8_t y) : x(x), y(y) {}
+	inline Vector(int16_t x, int16_t y) : x(x), y(y) {}
 	// constructor, create vector AB
 	inline Vector(Point a, Point b) : x(b.x - a.x), y(b.y - a.y) {}
 	// copy constructor

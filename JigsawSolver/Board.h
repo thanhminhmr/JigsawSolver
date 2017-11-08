@@ -10,29 +10,32 @@
 * ! read - only
 */
 class Board {
-private:
-	static const size_t MAX_SIZE = 16;
-
-protected:
-	Piece piece[MAX_SIZE];
-
 public:
+	Piece const * const piece;
+	const size_t size;
+
+	// default destructor
+	inline ~Board() {
+		memdealloc(piece);
+	}
 	// default constructor
-	inline Board() {}
-
+	inline Board() : piece(NULL), size(0) {}
 	// constructor
-	inline Board(const Piece* _point, size_t _size) {
-		// TODO: implement this @thanhminhmr
-	}
+	inline Board(const Piece* _piece, size_t _size)
+		: piece(memalloc<Piece>(_size)), size(_size) {
 
-	// Subtract this Board with a Board into new Board
-	inline Board subtract(const Board& Board) const {
-		// TODO: implement this
+		memcopy((Piece*) piece, _piece, size);
 	}
+	// copy constructor
+	inline Board(const Board& board)
+		: piece(memalloc<Piece>(board.size)), size(board.size) {
 
-	// Merge two Board into new Board
-	inline Board merge(const Board& Board) const {
-		// TODO: do we need this?
+		memcopy((Piece*) piece, board.piece, size);
+	}
+	// copy operator
+	inline void operator=(const Board& board) {
+		this->~Board();
+		new(this) Board(board);
 	}
 };
 
