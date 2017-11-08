@@ -29,7 +29,8 @@ public:
 	// constructor
 	inline Piece(const Point* _point, size_t _size) : point(NULL), angle(NULL), size(_size) {
 		point = memalloc<Point>(size);
-		normalize(point, _point, size);
+		//normalize(point, _point, size);
+		memcopy(point, _point, size);
 	}
 	// copy constructor
 	inline Piece(const Piece& piece) : point(NULL), angle(NULL), size(piece.size) {
@@ -40,6 +41,9 @@ public:
 	inline void operator=(const Piece& piece) {
 		this->~Piece();
 		new(this) Piece(piece);
+	}
+	inline Point* getPoints() {
+		return point;
 	}
 };
 

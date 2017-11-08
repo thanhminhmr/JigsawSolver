@@ -10,6 +10,10 @@
 #include <stdint.h>
 #include <math.h>
 #include <new>
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <istream>
 
 // add library here
 #include "misc.h"
@@ -20,5 +24,7 @@
 #include "Angle.h"
 #include "Piece.h"
 #include "Board.h"
+#include "State.h"
+#include "InOutStream.h"
 
 #endif // !_STD_H_
