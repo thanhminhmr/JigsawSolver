@@ -30,6 +30,7 @@ public:
 	// default constructor
 	inline Piece() : point(NULL), angle(NULL), size(0) {}
 	// constructor
+
 	inline Piece(const Point* _point, size_t _size)
 		: point(memalloc<Point>(_size)), angle(memalloc<Angle>(_size)), size(_size) {
 
@@ -47,6 +48,9 @@ public:
 	inline void operator=(const Piece& piece) {
 		this->~Piece();
 		new(this) Piece(piece);
+	}
+	inline Point* getPoints() {
+	//Toto
 	}
 };
 
