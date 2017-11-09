@@ -21,4 +21,7 @@
 #include "Piece.h"
 #include "Board.h"
 
+// main class here
+#include "Game.h"
+
 #endif // !_STD_H_

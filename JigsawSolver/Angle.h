@@ -14,9 +14,9 @@ public:
 	const Vector start, end;
 	// default constructor
 	inline Angle() : start(), end() {}
-	// constructor
+	// constructor, Angle from 3 Point
 	inline Angle(const Point& prev, const Point& current, const Point& next) : start(current, next), end(current, prev) {}
-	// constructor, Angle 
+	// constructor, Angle from 2 Vector
 	inline Angle(const Vector& a, const Vector& b) : start(a), end(b) {}
 	// copy constructor
 	inline Angle(const Angle& angle) : start(angle.start), end(angle.end) {}
