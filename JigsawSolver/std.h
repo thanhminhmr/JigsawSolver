@@ -11,6 +11,7 @@
 #include <math.h>
 #include <new>
 
+
 // add library here
 #include "misc.h"
 
@@ -20,6 +21,8 @@
 #include "Angle.h"
 #include "Piece.h"
 #include "Board.h"
+#include "State.h"
+#include "InOutStream.h"
 
 // main class here
 #include "Game.h"
