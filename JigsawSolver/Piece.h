@@ -6,8 +6,8 @@
 *
 * Define a Piece
 *
-* ! initialize on create
-* ! read - only
+* ! sized on create
+* ! read - write
 */
 class Piece {
 protected:
@@ -17,9 +17,15 @@ protected:
 	// create Angle array from normalized Point array
 	static inline void createAngle(Angle* angle, const Point* point, size_t size);
 
+	// check if two Piece (Point array) is identical
+	static inline bool isIdentical(const Point* a, const Point* b, size_t size);
+
+	// check if Piece a (Point array) can contain Piece b (Point array)
+	static inline bool isContainable(const Point* a, const Point* b, size_t size);
+
 public:
-	Point const * const point;
-	Angle const * const angle;
+	Point const* const point;
+	Angle const* const angle;
 	const size_t size;
 
 	// default destructor
@@ -30,10 +36,10 @@ public:
 	// default constructor
 	inline Piece() : point(NULL), angle(NULL), size(0) {}
 	// constructor
-	inline Piece(const Point* _point, size_t _size)
-		: point(memalloc<Point>(_size)), angle(memalloc<Angle>(_size)), size(_size) {
+	inline Piece(const Point* point, size_t size)
+		: point(memalloc<Point>(size)), angle(memalloc<Angle>(size)), size(size) {
 
-		normalize((Point*) point, _point, size);
+		normalize((Point*) this->point, point, size);
 		createAngle((Angle*) angle, point, size);
 	}
 	// copy constructor
@@ -48,16 +54,37 @@ public:
 		this->~Piece();
 		new(this) Piece(piece);
 	}
+
+	// misc, compare two Piece
+	inline bool operator==(const Piece& piece) const {
+		return isIdentical(point, piece.point, size);
+	}
+	// misc, compare two Piece
+	inline bool operator!=(const Piece& piece) const {
+		return isIdentical(point, piece.point, size) == false;
+	}
 };
 
 // normalize this Piece
 inline void Piece::normalize(Point* point_out, const Point* point_in, size_t size) {
-	// TODO: do we need this?
+	// TODO: implement this
 }
 
 // create Angle array from normalized Point array
-inline void Piece::createAngle(Angle * angle, const Point * point, size_t size) {
+inline void Piece::createAngle(Angle* angle, const Point* point, size_t size) {
 	// TODO: implement this
+}
+
+// check if two Piece is identical
+inline bool Piece::isIdentical(const Point* a, const Point* b, size_t size) {
+	// TODO: implement this.
+	return false;
+}
+
+// check if Piece a (Point array) can contain Piece b (Point array)
+inline bool Piece::isContainable(const Point* a, const Point* b, size_t size) {
+	// TODO: implement this
+	return false;
 }
 
 #endif // !_PIECE_H_

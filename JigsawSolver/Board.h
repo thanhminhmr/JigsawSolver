@@ -21,10 +21,10 @@ public:
 	// default constructor
 	inline Board() : piece(NULL), size(0) {}
 	// constructor
-	inline Board(const Piece* _piece, size_t _size)
-		: piece(memalloc<Piece>(_size)), size(_size) {
+	inline Board(const Piece* piece, size_t size)
+		: piece(memalloc<Piece>(size)), size(size) {
 
-		memcopy((Piece*) piece, _piece, size);
+		memcopy((Piece*) this->piece, piece, size);
 	}
 	// copy constructor
 	inline Board(const Board& board)
@@ -37,6 +37,14 @@ public:
 		this->~Board();
 		new(this) Board(board);
 	}
+
+	// subtract Piece from Board, return new Board
+	inline Board subtract(size_t index, const Piece& piece);
 };
 
+// subtract Piece from Board, return new Board
+inline Board Board::subtract(size_t index, const Piece & piece) {
+	// TODO: implement this
+	return Board();
+}
 #endif // !_BOARD_H_

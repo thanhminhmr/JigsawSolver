@@ -3,14 +3,15 @@
 #include "std.h"
 
 // tip, edit the next line to //* to see the magic
-/*
+//*
 int main() {
 	Point C(6, 2);
 	Point A(1, 1);
 	Point B(2, 4);
+	printf("%08X %08X %08X\n", &C.data, &C.x, &C.y);
 
-	Angle angle(B, A, C);
-	return printf("%f", angle.toRad());
+	//Angle angle(B, A, C);
+	//return printf("%f", angle.toRad());
 	// see the "/doc/test.png"
 }
 /*/
