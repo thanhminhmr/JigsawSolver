@@ -15,10 +15,10 @@ public:
 	// default constructor
 	inline Angle() : start(), end() {}
 	// constructor, Angle from 3 Point
-	inline Angle(const Point& prev, const Point& current, const Point& next) 
-		: start(current, next), end(current, prev) {}
+	inline Angle(const Point& prev, const Point& current, const Point& next)
+		: start(Vector(current, next).normalize()), end(Vector(current, prev).normalize()) {}
 	// constructor, Angle from 2 Vector
-	inline Angle(const Vector& a, const Vector& b) : start(a), end(b) {}
+	inline Angle(const Vector& a, const Vector& b) : start(a.normalize()), end(b.normalize()) {}
 	// copy constructor
 	inline Angle(const Angle& angle) : start(angle.start), end(angle.end) {}
 	// copy operator
@@ -26,7 +26,7 @@ public:
 		this->~Angle();
 		new(this) Angle(angle);
 	}
-	
+
 	// misc, compare two Angle
 	inline bool operator==(const Angle& angle) const {
 		return start == angle.start && end == angle.end;

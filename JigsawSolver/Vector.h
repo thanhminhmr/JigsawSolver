@@ -32,18 +32,17 @@ public:
 		new(this) Vector(vector);
 	}
 
-	inline void normalize() {
-		this->~Vector();
+	inline Vector normalize() const {
 		if (x != 0 && y != 0) {
 			int32_t a = x, b = y;
 			while (a != b) {
 				*((a > b) ? (&a) : (&b)) -= *((a > b) ? (&b) : (&a));
 			}
-			new(this) Vector(x / a, y / a);
+			return Vector(x / a, y / a);
 		} else if (x == 0) {
-			new(this) Vector(0, (y >= 0) ? 1 : -1);
+			return Vector(0, (y >= 0) ? 1 : -1);
 		} else {
-			new(this) Vector((x >= 0) ? 1 : -1, 0);
+			return Vector((x >= 0) ? 1 : -1, 0);
 		}
 	}
 
