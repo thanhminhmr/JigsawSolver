@@ -72,7 +72,9 @@ inline void Piece::normalize(Point* point_out, const Point* point_in, size_t siz
 
 // create Angle array from normalized Point array
 inline void Piece::createAngle(Angle* angle, const Point* point, size_t size) {
-	// TODO: implement this
+	for (int i = 0; i < size; i++) {
+		angle[i] = Angle(point[(i - 1 + size) % size], point[i], point[(i + 1) % size]);
+	}
 }
 
 // check if two Piece is identical
