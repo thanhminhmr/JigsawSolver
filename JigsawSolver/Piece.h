@@ -12,42 +12,42 @@
 class Piece {
 protected:
 	// normalize this Piece
-	static inline void normalize(Point* point_out, const Point* point_in, size_t size);
+	static inline void normalize(Point* points_out, const Point* points_in, size_t size);
 
 	// create Angle array from normalized Point array
 	static inline void createAngle(Angle* angle, const Point* point, size_t size);
 
 	// check if two Piece (Point array) is identical
-	static inline bool isIdentical(const Point* a, const Point* b, size_t size);
+	static inline bool isIdentical(const Point* points_a, const Point* points_b, size_t size);
 
 	// check if Piece a (Point array) can contain Piece b (Point array)
-	static inline bool isContainable(const Point* a, const Point* b, size_t size);
+	static inline bool isContainable(const Point* points_a, const Point* points_b, size_t size);
 
 public:
-	Point const* const point;
-	Angle const* const angle;
+	Point const* const points;
+	Angle const* const angles;
 	const size_t size;
 
 	// default destructor
 	inline ~Piece() {
-		memdealloc(point);
-		memdealloc(angle);
+		memdealloc(points);
+		memdealloc(angles);
 	}
 	// default constructor
-	inline Piece() : point(NULL), angle(NULL), size(0) {}
+	inline Piece() : points(NULL), angles(NULL), size(0) {}
 	// constructor
-	inline Piece(const Point* point, size_t size)
-		: point(memalloc<Point>(size)), angle(memalloc<Angle>(size)), size(size) {
+	inline Piece(const Point* points, size_t size)
+		: points(memalloc<Point>(size)), angles(memalloc<Angle>(size)), size(size) {
 
-		normalize((Point*) this->point, point, size);
-		createAngle((Angle*) angle, point, size);
+		normalize((Point*) this->points, points, size);
+		createAngle((Angle*) angles, points, size);
 	}
 	// copy constructor
 	inline Piece(const Piece& piece)
-		: point(memalloc<Point>(piece.size)), angle(memalloc<Angle>(piece.size)), size(piece.size) {
+		: points(memalloc<Point>(piece.size)), angles(memalloc<Angle>(piece.size)), size(piece.size) {
 
-		memcopy((Point*) point, piece.point, size);
-		memcopy((Angle*) angle, piece.angle, size);
+		memcopy((Point*) points, piece.points, size);
+		memcopy((Angle*) angles, piece.angles, size);
 	}
 	// copy operator
 	inline void operator=(const Piece& piece) {
@@ -57,34 +57,36 @@ public:
 
 	// misc, compare two Piece
 	inline bool operator==(const Piece& piece) const {
-		return isIdentical(point, piece.point, size);
+		return isIdentical(points, piece.points, size);
 	}
 	// misc, compare two Piece
 	inline bool operator!=(const Piece& piece) const {
-		return isIdentical(point, piece.point, size) == false;
+		return isIdentical(points, piece.points, size) == false;
 	}
 };
 
 // normalize this Piece
-inline void Piece::normalize(Point* point_out, const Point* point_in, size_t size) {
+inline void Piece::normalize(Point* points_out, const Point* points_in, size_t size) {
 	// TODO: implement this
 }
 
 // create Angle array from normalized Point array
-inline void Piece::createAngle(Angle* angle, const Point* point, size_t size) {
-	for (int i = 0; i < size; i++) {
-		angle[i] = Angle(point[(i - 1 + size) % size], point[i], point[(i + 1) % size]);
+inline void Piece::createAngle(Angle* angles, const Point* points, size_t size) {
+	angles[0] = Angle(points[size - 1], points[0], points[1]);
+	for (int i = 2; i < size; i++) {
+		angles[i] = Angle(points[i - 2], points[i - 1], points[i]);
 	}
+	angles[size - 1] = Angle(points[size - 2], points[size - 1], points[0]);
 }
 
 // check if two Piece is identical
-inline bool Piece::isIdentical(const Point* a, const Point* b, size_t size) {
+inline bool Piece::isIdentical(const Point* points_a, const Point* points_b, size_t size) {
 	// TODO: implement this.
 	return false;
 }
 
 // check if Piece a (Point array) can contain Piece b (Point array)
-inline bool Piece::isContainable(const Point* a, const Point* b, size_t size) {
+inline bool Piece::isContainable(const Point* points_a, const Point* points_b, size_t size) {
 	// TODO: implement this
 	return false;
 }

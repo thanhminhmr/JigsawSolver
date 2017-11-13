@@ -3,7 +3,6 @@
 
 class Game {
 protected:
-
 	// Piece data ==========
 	struct PieceState {
 		size_t id;
@@ -54,7 +53,7 @@ protected:
 			fscanf(fin, "%u%u", &x, &y);
 			point[j] = Point(x, y);
 		}
-		board = Board(&Piece(point, point_count), 1);
+		board = Board(&Piece(point, point_count), &Vector(0, 0), 1);
 
 		fclose(fin);
 		return true;
