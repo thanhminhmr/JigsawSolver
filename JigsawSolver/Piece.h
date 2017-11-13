@@ -46,5 +46,32 @@ public:
 // normalize this Piece
 inline void Piece::normalize(Point* point_out, const Point* point_in, size_t size) {
 	// TODO: do we need this?
+	double sum = 0.0;
+	//Vector a(0,0), b(0,0);
+	for(int i=0; i<size; i++){
+        sum += (point_in[i+1].x-point_in[i].x)*(point_in[i+1].y+point_in[i].y);
+	}
+	if(sum > 0) memcopy(point_out, point_in, size);
+	else if(sum < 0){
+        for(int i=0,j=size-1; i<size ;i++,j--){
+            point_out[i] = point_in[j];
+        }
+	}
+	Point highest = point_out[0];
+	Point left = point_out[0];
+	for(int i=0; i<size; i++){
+        if(highest.y<point_out[i].y) highest = point_out[i];
+        if(left.x>point_out[i].x) left = point_out[i];
+	}
+	//a.x = 0;
+	//a.y = -highest.y
+	Vector a(0,-highest.y);
+	Vector b(-left.x,0);
+	//b.x = -left.x;
+	//b.y = 0;
+	for(int i=0;i<size;i++){
+        point_out[i]=a.move(point_out[i]);
+        point_out[i]=b.move(point_out[i]);
+	}
 }
 #endif // !_PIECE_H_
