@@ -11,8 +11,11 @@
 */
 class Piece {
 protected:
-	// normalize this Piece
-	static inline void normalize(Point* points_out, const Point* points_in, size_t size);
+	// normalize this Piece to clockwise list of Point
+	static inline void normalizeClockwise(Point* points_out, const Point* points_in, size_t size);
+
+	// normalize this Piece position
+	static inline Vector normalizePosition(Point* points_out, const Point* points_in, size_t size);
 
 	// create Angle array from normalized Point array
 	static inline void createAngle(Angle* angle, const Point* point, size_t size);
@@ -21,7 +24,7 @@ protected:
 	static inline bool isIdentical(const Point* points_a, const Point* points_b, size_t size);
 
 	// check if Piece a (Point array) can contain Piece b (Point array)
-	static inline bool isContainable(const Point* points_a, const Point* points_b, size_t size);
+	static inline bool isContainable(const Point* points_a, const Point* points_b, size_t size, const Vector& position);
 
 public:
 	Point const* const points;
@@ -39,7 +42,7 @@ public:
 	inline Piece(const Point* points, size_t size)
 		: points(memalloc<Point>(size)), angles(memalloc<Angle>(size)), size(size) {
 
-		normalize((Point*) this->points, points, size);
+		normalizeClockwise((Point*) this->points, points, size);
 		createAngle((Angle*) angles, points, size);
 	}
 	// copy constructor
@@ -63,10 +66,21 @@ public:
 	inline bool operator!=(const Piece& piece) const {
 		return isIdentical(points, piece.points, size) == false;
 	}
+
+	// check if Piece a (Point array) can contain Piece b (Point array)
+	inline bool isContainable(const Piece& piece, const Vector& position) {
+		return isContainable(points, piece.points, size, position);
+	}
 };
 
-// normalize this Piece
-inline void Piece::normalize(Point* points_out, const Point* points_in, size_t size) {
+// normalize this Piece position
+inline Vector Piece::normalizePosition(Point * points_out, const Point * points_in, size_t size) {
+	// TODO: implement this
+	return Vector();
+}
+
+// normalize this Piece to clockwise list of Point
+inline void Piece::normalizeClockwise(Point* points_out, const Point* points_in, size_t size) {
 	// TODO: implement this
 }
 
@@ -86,7 +100,7 @@ inline bool Piece::isIdentical(const Point* points_a, const Point* points_b, siz
 }
 
 // check if Piece a (Point array) can contain Piece b (Point array)
-inline bool Piece::isContainable(const Point* points_a, const Point* points_b, size_t size) {
+inline bool Piece::isContainable(const Point* points_a, const Point* points_b, size_t size, const Vector& position) {
 	// TODO: implement this
 	return false;
 }
