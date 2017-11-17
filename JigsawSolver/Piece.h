@@ -87,7 +87,7 @@ inline void Piece::normalizeClockwise(Point* points_out, const Point* points_in,
 // create Angle array from normalized Point array
 inline void Piece::createAngle(Angle* angles, const Point* points, size_t size) {
 	angles[0] = Angle(points[size - 1], points[0], points[1]);
-	for (int i = 2; i < size; i++) {
+	for (size_t i = 2; i < size; i++) {
 		angles[i] = Angle(points[i - 2], points[i - 1], points[i]);
 	}
 	angles[size - 1] = Angle(points[size - 2], points[size - 1], points[0]);

@@ -3,18 +3,22 @@
 
 class Game {
 protected:
-	// Piece data ==========
 	struct PieceState {
 		size_t id;
 		size_t state_count;
 		Piece state[8];
 	};
-	size_t piece_count;
-	PieceState* piece;
+	struct PieceData {
+		// Piece data ==========
+		size_t piece_count;
+		PieceState* piece;
 
+	};
 	// Board data ==========
 	size_t board_id;
 	Board board;
+
+	PieceData game;
 
 protected:
 	bool readFile(const char* filename) {
@@ -28,21 +32,21 @@ protected:
 		}
 
 		// read Piece ==========
-		fscanf(fin, "%u", &piece_count);
-		piece = memalloc<PieceState>(piece_count);
-		for (size_t i = 0; i < piece_count; i += 1) {
+		fscanf(fin, "%u", &game.piece_count);
+		game.piece = memalloc<PieceState>(game.piece_count);
+		for (size_t i = 0; i < game.piece_count; i += 1) {
 			size_t piece_id, point_count;
 
 			fscanf(fin, "%u%u", &piece_id, &point_count);
-			piece[i].id = piece_id;
-			piece[i].state_count = 1;
+			game.piece[i].id = piece_id;
+			game.piece[i].state_count = 1;
 
 			for (size_t j = 0; j < point_count; j += 1) {
 				size_t x, y;
 				fscanf(fin, "%u%u", &x, &y);
 				point[j] = Point(x, y);
 			}
-			piece[i].state[0] = Piece(point, point_count);
+			game.piece[i].state[0] = Piece(point, point_count);
 		}
 
 		// read Board ==========
@@ -53,7 +57,9 @@ protected:
 			fscanf(fin, "%u%u", &x, &y);
 			point[j] = Point(x, y);
 		}
-		board = Board(&Piece(point, point_count), &Vector(0, 0), 1);
+		Piece piece = Piece(point, point_count);
+		Vector vector = Vector(0, 0);
+		board = Board(&piece, &vector, 1);
 
 		fclose(fin);
 		return true;
@@ -69,7 +75,7 @@ public:
 		if (readFile("input_1.txt") == false) {
 			return false;
 		}
-		rotatePiece(piece, piece_count);
+		rotatePiece(game.piece, game.piece_count);
 	}
 
 	bool run() {
