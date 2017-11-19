@@ -95,7 +95,21 @@ inline void Piece::createAngle(Angle* angles, const Point* points, size_t size) 
 
 // check if two Piece is identical
 inline bool Piece::isIdentical(const Point* points_a, const Point* points_b, size_t size) {
-	// TODO: implement this.
+	size_t idx = size;
+	for (size_t i = 0; i < size; i++) {
+		if (points_a[0] == points_b[i]) {
+			idx = i;
+			break;
+		}
+	}
+	if (idx < size) {
+		for (size_t i = 0; i < size; i++) {
+			if (points_a[i] != points_b[(i + idx) % size]) {
+				return false;
+			}
+		}
+		return true;
+	}
 	return false;
 }
 
