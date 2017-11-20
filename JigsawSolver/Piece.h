@@ -12,10 +12,10 @@
 class Piece {
 protected:
 	// normalize this Piece to clockwise list of Point
-
 	static inline void normalizeClockwise(Point* point_out, const Point* point_in, size_t size);
 
-	static inline Vector normalizePosition(Point* point_out, const Point* point_in, size_t size);
+	// normalize this Piece position
+	static inline Vector normalizePosition(Point* point, size_t size);
 
 	// create Angle array from normalized Point array
 	static inline void createAngle(Angle* angle, const Point* point, size_t size);
@@ -28,8 +28,8 @@ protected:
 
 
 public:
-	Point const* const points;
-	Angle const* const angles;
+	Point const * const points;
+	Angle const * const angles;
 	const size_t size;
 
 	// default destructor
@@ -68,41 +68,48 @@ public:
 		return isIdentical(points, piece.points, size) == false;
 	}
 
+	inline Vector normalize() {
+		return normalizePosition((Point*) points, size);
+	}
+
 	// check if Piece a (Point array) can contain Piece b (Point array)
 	inline bool isContainable(const Piece& piece, const Vector& position) {
 		return isContainable(points, piece.points, size, position);
 	}
 };
 
-// normalize this Piece
+// normalize this Piece to clockwise list of Point
 inline void Piece::normalizeClockwise(Point* point_out, const Point* point_in, size_t size) {
-	// TODO: do we need this?
-	int sum = 0;
-	for(int i=0; i<size; i++){
-        sum += (point_in[i+1].x-point_in[i].x)*(point_in[i+1].y+point_in[i].y);
+	int32_t sum = ((int32_t) point_in[0].x - (int32_t) point_in[size - 1].x)
+		* ((int32_t) point_in[0].y + (int32_t) point_in[size - 1].y);
+
+	for (size_t i = 1; i < size; i++) {
+		sum += ((int32_t) point_in[i].x - (int32_t) point_in[i - 1].x) 
+			* ((int32_t) point_in[i].y + (int32_t) point_in[i - 1].y);
 	}
-	if(sum > 0) memcopy(point_out, point_in, size);
-	else if(sum < 0){
-        for(int i=0,j=size-1; i<size ;i++,j--){
-            point_out[i] = point_in[j];
-        }
+	if (sum > 0) {
+		memcopy(point_out, point_in, size);
+	} else if (sum < 0) {
+		for (size_t i = 0, j = size - 1; i < size; i++, j--) {
+			point_out[i] = point_in[j];
+		}
 	}
 }
 // normalize this Piece position
-inline Vector Piece::normalizePosition(Point* point_out, const Point* point_in, size_t size){
-	int16_t highest = point_out[0].y;
-	int16_t left = point_out[0].x;
-	for(int i=0; i<size; i++){
-        if(highest<point_out[i].y) highest = point_out[i].y;
-        if(left>point_out[i].x) left = point_out[i].x;
+inline Vector Piece::normalizePosition(Point* point, size_t size) {
+	int16_t left = point[0].x;
+	int16_t top = point[0].y;
+	for (size_t i = 0; i < size; i++) {
+		// if (highest < point_out[i].y) highest = point_out[i].y;
+		top = (top < point[i].y) ? point[i].y : top;
+		// if (left < point_out[i].x) left = point_out[i].x;
+		left = (left < point[i].x) ? point[i].x : left;
 	}
-
-	Vector a(-left,-highest);
-    Vector b(left,highest);
-	for(int i=0;i<size;i++){
-        point_out[i]=a.move(point_out[i]);
+	Vector delta(-left, -top);
+	for (size_t i = 0; i < size; i++) {
+		point[i] = delta.move(point[i]);
 	}
-	return b;
+	return Vector(left, top);
 }
 
 
@@ -118,20 +125,15 @@ inline void Piece::createAngle(Angle* angles, const Point* points, size_t size) 
 
 // check if two Piece is identical
 inline bool Piece::isIdentical(const Point* points_a, const Point* points_b, size_t size) {
-	size_t idx = size;
-	for (size_t i = 0; i < size; i++) {
-		if (points_a[0] == points_b[i]) {
-			idx = i;
-			break;
-		}
-	}
-	if (idx < size) {
-		for (size_t i = 0; i < size; i++) {
-			if (points_a[i] != points_b[(i + idx) % size]) {
-				return false;
+	for (size_t delta = 0; delta < size; delta++) {
+		if (points_a[0] == points_b[delta]) {
+			for (size_t i = 0; i < size; i++) {
+				if (points_a[i] != points_b[(i + delta) % size]) {
+					return false;
+				}
 			}
+			return true;
 		}
-		return true;
 	}
 	return false;
 }
