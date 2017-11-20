@@ -11,34 +11,53 @@
 */
 class Vector {
 public:
-	const int8_t x, y;
+	union {
+		struct {
+			const int16_t x, y;
+		};
+		const int32_t data;
+	};
 
 	// default constructor
 	inline Vector() : x(0), y(0) {}
 	// constructor
-	inline Vector(int8_t x, int8_t y) : x(x), y(y) {}
+	inline Vector(int16_t x, int16_t y) : x(x), y(y) {}
 	// constructor, create vector AB
 	inline Vector(Point a, Point b) : x(b.x - a.x), y(b.y - a.y) {}
 	// copy constructor
-	inline Vector(const Vector& v) : x(v.x), y(v.y) {}
+	inline Vector(const Vector& vector) : data(vector.data) {}
 	// copy operator
-	inline void operator=(const Vector& v) {
+	inline void operator=(const Vector& vector) {
 		this->~Vector();
-		new(this) Vector(v);
+		new(this) Vector(vector);
+	}
+
+	inline Vector normalize() const {
+		if (x != 0 && y != 0) {
+			int32_t a = x, b = y;
+			while (a != b) {
+				*((a > b) ? (&a) : (&b)) -= *((a > b) ? (&b) : (&a));
+			}
+			return Vector(x / a, y / a);
+		} else if (x == 0) {
+			return Vector(0, (y >= 0) ? 1 : -1);
+		} else {
+			return Vector((x >= 0) ? 1 : -1, 0);
+		}
 	}
 
 	// move a Point with this Vector
-	inline Point move(const Point& p) const {
-		return Point(p.x + x, p.y + y);
+	inline Point move(const Point& point) const {
+		return Point(point.x + x, point.y + y);
 	};
 
 	// misc, compare two Vector
-	inline bool operator==(const Vector& v) const {
-		return x == v.x && y == v.y;
+	inline bool operator==(const Vector& vector) const {
+		return data == vector.data;
 	}
 	// misc, compare two Vector
-	inline bool operator!=(const Vector& v) const {
-		return x != v.x || y != v.y;
+	inline bool operator!=(const Vector& vector) const {
+		return data != vector.data;
 	}
 };
 

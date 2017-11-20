@@ -10,30 +10,45 @@
 * ! read - only
 */
 class Board {
-private:
-	static const size_t MAX_SIZE = 16;
-
-protected:
-	Piece piece[MAX_SIZE];
-
 public:
+	Piece const * const pieces;
+	Vector const * const positions;
+	const size_t size;
+
+	// default destructor
+	inline ~Board() {
+		memdealloc(pieces);
+	}
 	// default constructor
-	inline Board() {}
-
+	inline Board() : pieces(NULL), positions(NULL), size(0) {}
 	// constructor
-	inline Board(const Piece* _point, size_t _size) {
-		// TODO: implement this @thanhminhmr
+	inline Board(const Piece* pieces, const Vector* positions, size_t size)
+		: pieces(memalloc<Piece>(size)), positions(memalloc<Vector>(size)), size(size) {
+
+		memcopy((Piece*) this->pieces, pieces, size);
+		memcopy((Vector*) this->positions, positions, size);
+	}
+	// copy constructor
+	inline Board(const Board& board)
+		: pieces(memalloc<Piece>(board.size)), positions(memalloc<Vector>(board.size)), size(board.size) {
+
+		memcopy((Piece*) pieces, board.pieces, size);
+		memcopy((Vector*) positions, board.positions, size);
+	}
+	// copy operator
+	inline void operator=(const Board& board) {
+		this->~Board();
+		new(this) Board(board);
 	}
 
-	// Subtract this Board with a Board into new Board
-	inline Board subtract(const Board& Board) const {
-		// TODO: implement this
-	}
-
-	// Merge two Board into new Board
-	inline Board merge(const Board& Board) const {
-		// TODO: do we need this?
-	}
+	// subtract Piece from Board, return new Board
+	inline Board subtract(size_t index, const Piece& piece, const Vector& place);
 };
 
+// subtract Piece from Board, return new Board
+inline Board Board::subtract(size_t index, const Piece& piece, const Vector& position) {
+	assert(index < size);
+	// TODO: implement this
+	return Board();
+}
 #endif // !_BOARD_H_

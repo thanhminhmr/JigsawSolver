@@ -11,27 +11,32 @@
 */
 class Point {
 public:
-	const int8_t x, y;
+	union {
+		struct {
+			const int16_t x, y;
+		};
+		const int32_t data;
+	};
 
 	// default constructor
 	inline Point() : x(0), y(0) {}
 	// constructor
-	inline Point(int8_t x, int8_t y) : x(x), y(y) {}
+	inline Point(int16_t x, int16_t y) : x(x), y(y) {}
 	// copy constructor
-	inline Point(const Point& p) : x(p.x), y(p.y) {}
+	inline Point(const Point& point) : data(point.data) {}
 	// copy operator
-	inline void operator=(const Point& p) {
+	inline void operator=(const Point& point) {
 		this->~Point();
-		new(this) Point(p);
+		new(this) Point(point);
 	}
 
 	// misc, compare two Point
-	inline bool operator==(const Point& p) const {
-		return x == p.x && y == p.y;
+	inline bool operator==(const Point& point) const {
+		return data == point.data;
 	}
 	// misc, compare two Point
-	inline bool operator!=(const Point& p) const {
-		return x != p.x || y != p.y;
+	inline bool operator!=(const Point& point) const {
+		return data != point.data;
 	}
 };
 
