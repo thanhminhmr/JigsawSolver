@@ -12,7 +12,6 @@
 class Board {
 public:
 	Piece const * const pieces;
-	Vector const * const positions;
 	const size_t size;
 
 	// default destructor
@@ -20,20 +19,18 @@ public:
 		memdealloc(pieces);
 	}
 	// default constructor
-	inline Board() : pieces(NULL), positions(NULL), size(0) {}
+	inline Board() : pieces(NULL), size(0) {}
 	// constructor
-	inline Board(const Piece* pieces, const Vector* positions, size_t size)
-		: pieces(memalloc<Piece>(size)), positions(memalloc<Vector>(size)), size(size) {
+	inline Board(const Piece* pieces, size_t size)
+		: pieces(memalloc<Piece>(size)), size(size) {
 
 		memcopy((Piece*) this->pieces, pieces, size);
-		memcopy((Vector*) this->positions, positions, size);
 	}
 	// copy constructor
 	inline Board(const Board& board)
-		: pieces(memalloc<Piece>(board.size)), positions(memalloc<Vector>(board.size)), size(board.size) {
+		: pieces(memalloc<Piece>(board.size)), size(board.size) {
 
 		memcopy((Piece*) pieces, board.pieces, size);
-		memcopy((Vector*) positions, board.positions, size);
 	}
 	// copy operator
 	inline void operator=(const Board& board) {
@@ -42,11 +39,11 @@ public:
 	}
 
 	// subtract Piece from Board, return new Board
-	inline Board subtract(size_t index, const Piece& piece, const Vector& place);
+	inline Board subtract(size_t index, const Piece& piece, const Vector& position) const;
 };
 
 // subtract Piece from Board, return new Board
-inline Board Board::subtract(size_t index, const Piece& piece, const Vector& position) {
+inline Board Board::subtract(size_t index, const Piece& piece, const Vector& position) const {
 	assert(index < size);
 	// TODO: implement this
 	return Board();

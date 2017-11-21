@@ -48,6 +48,9 @@ int main() {
     Piece newPiece = Piece(piece.points, piece.size);
     //g.generateFlip(piece);
     changedPiece = g.generateNextRotation(piece);
+    //changedPiece = g.generateNextRotation(g.generateNextRotation(piece));
+
+    //print(piece);
 
     printFile(changedPiece);
     return 0;
