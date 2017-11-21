@@ -29,7 +29,7 @@ protected:
 protected:
 	// constructor, normalize Piece position
 	inline Piece(const Piece& piece, Vector& position)
-		: points(memalloc<Point>(size)), angles(memalloc<Angle>(size)), size(size) {
+		: points(memalloc<Point>(piece.size)), angles(memalloc<Angle>(piece.size)), size(piece.size) {
 
 		position = normalizePosition((Point*) points, piece.points, size);
 		memcopy((Angle*) angles, piece.angles, size);
@@ -50,6 +50,7 @@ public:
 	// constructor
 	inline Piece(const Point* points, size_t size)
 		: points(memalloc<Point>(size)), angles(memalloc<Angle>(size)), size(size) {
+		assert(size >= 3);
 
 		normalizeClockwise((Point*) this->points, points, size);
 		createAngle((Angle*) angles, points, size);

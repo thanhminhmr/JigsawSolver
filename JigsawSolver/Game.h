@@ -32,18 +32,18 @@ protected:
 		}
 
 		// read Piece ==========
-		fscanf(fin, "%u", &game.piece_count);
+		fscanf(fin, "%zu", &game.piece_count);
 		game.piece = memalloc<PieceState>(game.piece_count);
 		for (size_t i = 0; i < game.piece_count; i += 1) {
 			size_t piece_id, point_count;
 
-			fscanf(fin, "%u%u", &piece_id, &point_count);
+			fscanf(fin, "%zu%zu", &piece_id, &point_count);
 			game.piece[i].id = piece_id;
 			game.piece[i].state_count = 1;
 
 			for (size_t j = 0; j < point_count; j += 1) {
 				size_t x, y;
-				fscanf(fin, "%u%u", &x, &y);
+				fscanf(fin, "%zu%zu", &x, &y);
 				point[j] = Point(x, y);
 			}
 			game.piece[i].state[0] = Piece(point, point_count).normalize();
@@ -51,10 +51,10 @@ protected:
 
 		// read Board ==========
 		size_t point_count;
-		fscanf(fin, "%u%u", &board_id, &point_count);
+		fscanf(fin, "%zu%zu", &board_id, &point_count);
 		for (size_t j = 0; j < point_count; j += 1) {
 			size_t x, y;
-			fscanf(fin, "%u%u", &x, &y);
+			fscanf(fin, "%zu%zu", &x, &y);
 			point[j] = Point(x, y);
 		}
 		Piece piece = Piece(point, point_count);
