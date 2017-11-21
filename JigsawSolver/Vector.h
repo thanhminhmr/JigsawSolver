@@ -34,7 +34,7 @@ public:
 
 	inline Vector normalize() const {
 		if (x != 0 && y != 0) {
-			int32_t a = x, b = y;
+			int32_t a = (x >= 0) ? x : -x, b = (y >= 0) ? y : -y;
 			while (a != b) {
 				*((a > b) ? (&a) : (&b)) -= *((a > b) ? (&b) : (&a));
 			}
