@@ -46,7 +46,7 @@ protected:
 				fscanf(fin, "%u%u", &x, &y);
 				point[j] = Point(x, y);
 			}
-			game.piece[i].state[0] = Piece(point, point_count);
+			game.piece[i].state[0] = Piece(point, point_count).normalize();
 		}
 
 		// read Board ==========
@@ -58,8 +58,7 @@ protected:
 			point[j] = Point(x, y);
 		}
 		Piece piece = Piece(point, point_count);
-		Vector vector = Vector(0, 0);
-		board = Board(&piece, &vector, 1);
+		board = Board(&piece, 1);
 
 		fclose(fin);
 		return true;
