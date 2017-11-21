@@ -6,8 +6,8 @@
 *
 * Define a Piece
 *
-* ! sized on create
-* ! read - write
+* ! initialize on create
+* ! read - only
 */
 class Piece {
 protected:
@@ -15,7 +15,7 @@ protected:
 	static inline void normalizeClockwise(Point* point_out, const Point* point_in, size_t size);
 
 	// normalize this Piece position
-	static inline Vector normalizePosition(Point* point, size_t size);
+	static inline Vector normalizePosition(Point* point_out, const Point* point_in, size_t size);
 
 	// create Angle array from normalized Point array
 	static inline void createAngle(Angle* angle, const Point* point, size_t size);
@@ -26,6 +26,14 @@ protected:
 	// check if Piece a (Point array) can contain Piece b (Point array)
 	static inline bool isContainable(const Point* points_a, const Point* points_b, size_t size, const Vector& position);
 
+protected:
+	// constructor, normalize Piece position
+	inline Piece(const Piece& piece, Vector& position)
+		: points(memalloc<Point>(size)), angles(memalloc<Angle>(size)), size(size) {
+
+		position = normalizePosition((Point*) points, piece.points, size);
+		memcopy((Angle*) angles, piece.angles, size);
+	}
 
 public:
 	Point const * const points;
@@ -68,12 +76,19 @@ public:
 		return isIdentical(points, piece.points, size) == false;
 	}
 
-	inline Vector normalize() {
-		return normalizePosition((Point*) points, size);
+	// normalize this Piece position, return new Piece and position
+	inline Piece normalize(Vector& position) const {
+		return Piece(*this, position);
+	}
+
+	// normalize this Piece position, return new Piece
+	inline Piece normalize() const {
+		Vector position;
+		return Piece(*this, position);
 	}
 
 	// check if Piece a (Point array) can contain Piece b (Point array)
-	inline bool isContainable(const Piece& piece, const Vector& position) {
+	inline bool isContainable(const Piece& piece, const Vector& position) const {
 		return isContainable(points, piece.points, size, position);
 	}
 };
@@ -95,24 +110,23 @@ inline void Piece::normalizeClockwise(Point* point_out, const Point* point_in, s
 		}
 	}
 }
+
 // normalize this Piece position
-inline Vector Piece::normalizePosition(Point* point, size_t size) {
-	int16_t left = point[0].x;
-	int16_t top = point[0].y;
+inline Vector Piece::normalizePosition(Point* point_out, const Point* point_in, size_t size) {
+	int16_t left = point_in[0].x;
+	int16_t top = point_in[0].y;
 	for (size_t i = 0; i < size; i++) {
 		// if (highest < point_out[i].y) highest = point_out[i].y;
-		top = (top < point[i].y) ? point[i].y : top;
+		top = (top < point_in[i].y) ? point_in[i].y : top;
 		// if (left < point_out[i].x) left = point_out[i].x;
-		left = (left < point[i].x) ? point[i].x : left;
+		left = (left < point_in[i].x) ? point_in[i].x : left;
 	}
 	Vector delta(-left, -top);
 	for (size_t i = 0; i < size; i++) {
-		point[i] = delta.move(point[i]);
+		point_out[i] = delta.move(point_in[i]);
 	}
 	return Vector(left, top);
 }
-
-
 
 // create Angle array from normalized Point array
 inline void Piece::createAngle(Angle* angles, const Point* points, size_t size) {
