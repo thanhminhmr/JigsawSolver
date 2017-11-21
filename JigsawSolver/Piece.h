@@ -84,7 +84,7 @@ inline void Piece::normalizeClockwise(Point* point_out, const Point* point_in, s
 		* ((int32_t) point_in[0].y + (int32_t) point_in[size - 1].y);
 
 	for (size_t i = 1; i < size; i++) {
-		sum += ((int32_t) point_in[i].x - (int32_t) point_in[i - 1].x) 
+		sum += ((int32_t) point_in[i].x - (int32_t) point_in[i - 1].x)
 			* ((int32_t) point_in[i].y + (int32_t) point_in[i - 1].y);
 	}
 	if (sum > 0) {
