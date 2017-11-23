@@ -10,6 +10,14 @@ Piece changedPiece;
 
 void init() {
     Point points[8];
+    //points[0] = Point(75, 30);
+    //points[1] = Point(75, 37);
+    //points[2] = Point(89, 37);
+    //points[3] = Point(89, 42);
+    //points[4] = Point(66, 42);
+    //points[5] = Point(50, 37);
+    //points[6] = Point(50, 30);
+    //g.game.piece[1].id = 1;
     points[0] = Point(75, 30);
     points[1] = Point(75, 37);
     points[2] = Point(89, 37);
@@ -17,7 +25,7 @@ void init() {
     points[4] = Point(66, 42);
     points[5] = Point(50, 37);
     points[6] = Point(50, 30);
-    //g.game.piece[1].id = 1;
+
     piece = Piece(points, 7);
 }
 
@@ -46,13 +54,20 @@ int main() {
 	//printf("%08X %08X %08X\n", &C.data, &C.x, &C.y);
     Game g;
     Piece newPiece = Piece(piece.points, piece.size);
-    //g.generateFlip(piece);
-    changedPiece = g.generateNextRotation(piece);
-    //changedPiece = g.generateNextRotation(g.generateNextRotation(piece));
+    changedPiece = g.generateFlip(piece);
+    //changedPiece = g.generateNextRotation(piece);
+    //changedPiece = g.generateNextRotation(g.generateNextRotation(g.generateNextRotation(g.generateNextRotation(piece))));
 
+    //changedPiece = g.generateNextRotation(g.generateNextRotation(g.generateNextRotation(piece)));
+    Vector v(10, 10);
+    bool res;
+
+    res = piece.isContainable(changedPiece, v);
+    printf("%d", res);
     //print(piece);
 
-    printFile(changedPiece);
+    //printFile(changedPiece);
+    //printFile(piece);
     return 0;
 	//Angle angle(B, A, C);
 	//return printf("%f", angle.toRad());

@@ -88,8 +88,9 @@ public:
 
 //Flip the piece
 Piece Game::generateFlip(const Piece& piece_in) {
+    Point newPoints[piece_in.size];
     size_t piece_size = piece_in.size;
-    Point newPoints[piece_size];
+
     for (int i = 0; i < piece_size; i++) {
         int x = 101 - 1 - piece_in.points[i].x;
         int y = piece_in.points[i].y; //width - 1 - piece.points[i].x -> width = 65 or 100 ?
@@ -116,12 +117,12 @@ Game::PieceState Game::generateStates(const Piece& initState) {
     //generate rotation of initPiece
     pieceState.state[0] = initState;
     for (int i = 1; i < 4; i++) {
-        pieceState.state[i] = generateNextRotation(state[i - 1]);
+        pieceState.state[i] = generateNextRotation(pieceState.state[i - 1]);
     }
     //generate rotation of flipped piece
     pieceState.state[4] = generateFlip(initState);
     for (int i = 5; i < 8; i++) {
-        pieceState.state[i] = generateNextRotation(state[i - 1]);
+        pieceState.state[i] = generateNextRotation(pieceState.state[i - 1]);
     }
     pieceState.state_count = 8; // Decrement later if isIndentify()???
     return pieceState;

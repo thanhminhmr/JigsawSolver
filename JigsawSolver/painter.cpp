@@ -9,8 +9,8 @@
 //const char* FILENAME = "../Doc/de1_solution_reformat.txt";
 const char* FILENAME = "output.txt";
 const int origin_pos = 0; //change this to scale the board
-const int width = 100;
-const int height = 64;
+const int width = 100*1.5;
+const int height = 64*1.5;
 
 using namespace std;
 class Point
