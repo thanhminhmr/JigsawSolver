@@ -64,6 +64,12 @@ protected:
 		return true;
 	}
 
+    static inline bool isDuplicate(const PieceState& pieceState, int stateSize, const Piece& piece);
+    static inline PieceState generateStates(const Piece& initState);
+    static inline Piece generateNextRotation(const Piece& piece);
+    static inline Piece generateFlip(const Piece& piece_in);
+
+    static inline void rotatePiece(PieceState* piece, size_t piece_count);
 public:
 	Game() {}
 	~Game() {}
@@ -79,11 +85,7 @@ public:
 		// TODO: implement this @thanhminhmr
 	}
 
-    //Put in public for testing purpose
-    static void rotatePiece(PieceState* piece, size_t piece_count);
-    static PieceState generateStates(const Piece& initState);
-    static Piece generateNextRotation(const Piece& piece);
-    static Piece generateFlip(const Piece& piece_in);
+
 };
 
 //Flip the piece
@@ -112,19 +114,35 @@ Piece Game::generateNextRotation(const Piece& piece) {
     return Piece(newPoints, piece_size);
 }
 
+bool Game::isDuplicate(const PieceState& pieceState, int stateSize, const Piece& piece) {
+    for (int i = 0; i < stateSize; i++) {
+        if (piece == pieceState.state[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
 Game::PieceState Game::generateStates(const Piece& initState) {
     PieceState pieceState;
     //generate rotation of initPiece
     pieceState.state[0] = initState;
     for (int i = 1; i < 4; i++) {
-        pieceState.state[i] = generateNextRotation(pieceState.state[i - 1]);
+        Piece rotPiece = generateNextRotation(pieceState.state[i - 1]);
+        if (!isDuplicate(pieceState, i + 1, rotPiece)) {
+            pieceState.state[i] = rotPiece;
+            pieceState.state_count ++;
+        }
     }
     //generate rotation of flipped piece
     pieceState.state[4] = generateFlip(initState);
     for (int i = 5; i < 8; i++) {
-        pieceState.state[i] = generateNextRotation(pieceState.state[i - 1]);
+        Piece flipPiece = generateNextRotation(pieceState.state[i - 1]);
+        if (!isDuplicate(pieceState, i + 1, flipPiece)) {
+            pieceState.state[i] = flipPiece;
+            pieceState.state_count ++;
+        }
     }
-    pieceState.state_count = 8; // Decrement later if isIndentify()???
     return pieceState;
 }
 
