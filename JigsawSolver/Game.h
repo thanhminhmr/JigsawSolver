@@ -83,6 +83,7 @@ public:
 
 	bool run() {
 		// TODO: implement this @thanhminhmr
+        return false;
 	}
 
 
@@ -93,7 +94,7 @@ Piece Game::generateFlip(const Piece& piece_in) {
     Point newPoints[piece_in.size];
     size_t piece_size = piece_in.size;
 
-    for (int i = 0; i < piece_size; i++) {
+    for (size_t i = 0; i < piece_size; i++) {
         int x = 101 - 1 - piece_in.points[i].x;
         int y = piece_in.points[i].y; //width - 1 - piece.points[i].x -> width = 65 or 100 ?
         newPoints[i] = Point(x, y);
@@ -106,7 +107,7 @@ Piece Game::generateFlip(const Piece& piece_in) {
 Piece Game::generateNextRotation(const Piece& piece) {
     Point newPoints[piece.size];
     size_t piece_size = piece.size;
-    for (int i = 0; i < piece_size; i++) {
+    for (size_t i = 0; i < piece_size; i++) {
         int x = piece.points[i].y;
         int y = 101 - 1 - piece.points[i].x; //width - 1 - piece.points[i].x -> width = 65 or 100 ?
         newPoints[i] = Point(x, y);
@@ -148,7 +149,8 @@ Game::PieceState Game::generateStates(const Piece& initState) {
 
 void Game::rotatePiece(PieceState* piece, size_t piece_count) {
 	// TODO: implement this
-    for (int i = 0; i < piece_count; i++) {
+	//
+    for (size_t i = 0; i < piece_count; i++) {
         piece[i] = generateStates(piece[i].state[0]);
     }
 }

@@ -143,7 +143,7 @@ inline Vector Piece::normalizePosition(Point* point_out, const Point* point_in, 
 	}
 	Vector delta(-left, -top);
 	for (size_t i = 0; i < size; i++) {
-		point_out[i] = delta.move(point_in[i]); //!need to create new Point cuz Point is read only
+		point_out[i] = delta.move(point_in[i]);
 	}
 	return Vector(left, top);
 }
@@ -232,8 +232,8 @@ bool Piece::isInside(const Point* polygon, int n, Point p) {
 inline bool Piece::isContainable(const Point* points_a, const Point* points_b, size_t size, const Vector& position) {
     Point pos_b[size]; // Points_b after moving to position
     //Move Piece b to position
-    for (int i = 0; i < size; i++) {
-        pos_b[i] = Point(position.move(points_b[i]));
+    for (size_t i = 0; i < size; i++) {
+        pos_b[i] = position.move(points_b[i]);
         if (!isInside(points_a, size, pos_b[i])) return false;
     }
 	return true;
