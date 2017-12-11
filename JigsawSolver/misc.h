@@ -30,4 +30,6 @@ template <class T> const T& max (const T& a, const T& b) {
 template <class T> const T& min (const T& a, const T& b) {
   return !(b<a)?a:b;     // or: return !comp(b,a)?a:b; for version (2)
 }
+
+
 #endif // !_MISC_H_

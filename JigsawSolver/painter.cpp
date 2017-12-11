@@ -143,13 +143,14 @@ void displayOnePiece(Piece p)
     //}
     //glEnd();
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColor3f(0.0, 0.0, 1.0);
-    glBegin(GL_POLYGON);
-    for (int i = 0; i < p.point_count; i++)
-    {
+    glBegin(GL_LINE_STRIP);
+
+    for (int i = 0; i < p.point_count; i++) {
         glVertex2f(p.points[i].x, - p.points[i].y);
     }
+    glVertex2d(p.points[0].x, - p.points[0].y);
     glEnd();
 }
 

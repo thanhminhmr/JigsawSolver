@@ -2,6 +2,7 @@
 #define _PIECE_H_
 
 #define INF 10000
+
 /**
 * Piece.h
 *
@@ -95,10 +96,20 @@ public:
 		return Piece(*this, position);
 	}
 
+	inline Piece move(const Vector& position) {
+        Point tmp_points[size];
+        for (size_t i = 0; i < size; i++) {
+            tmp_points[i] = position.move(tmp_points[i]);
+        }
+        return Piece(tmp_points, size);
+	}
 	// check if Piece a (Point array) can contain Piece b (Point array)
 	inline bool isContainable(const Piece& piece, const Vector& position) const {
 		return isContainable(points, piece.points, size, position);
 	}
+
+	//GPC library helper
+	inline gpc_polygon converseToGpcPolygon();
 };
 
 // To find orientation of ordered triplet (p, q, r).
@@ -238,5 +249,25 @@ inline bool Piece::isContainable(const Point* points_a, const Point* points_b, s
     }
 	return true;
 }
+
+//Converse from Piece to GPC's polygon def
+//MALLOC: gpc.h
+inline gpc_polygon Piece::converseToGpcPolygon() {
+    gpc_polygon p;
+    p.num_contours = 1;
+    MALLOC(p.hole, p.num_contours * sizeof(int),"hole flag array creation", int);
+    MALLOC(p.contour, p.num_contours* sizeof(gpc_vertex_list), "contour creation", gpc_vertex_list);
+
+    p.contour[0].num_vertices = (int) size;
+    MALLOC(p.contour[0].vertex, p.contour[0].num_vertices* sizeof(gpc_vertex), "vertex creation", gpc_vertex);
+
+    for (int i = 0; i < p.contour[0].num_vertices; i++) {
+        p.contour[0].vertex[i].x = points[i].x;
+        p.contour[0].vertex[i].y = points[i].y;
+    }
+    return p;
+}
+
+
 
 #endif // !_PIECE_H_

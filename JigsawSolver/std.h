@@ -14,6 +14,8 @@
 
 // add library here
 #include "misc.h"
+#include "gpc.c"
+#include "gpc.h"
 
 // add class here
 #include "Point.h"
