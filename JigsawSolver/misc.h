@@ -1,6 +1,14 @@
 #ifndef _MISC_H_
 #define _MISC_H_
 
+#ifndef min
+#define min(a, b) ((a) <= (b) ? (a) : (b))
+#endif // !min
+
+#ifndef max
+#define max(a, b) ((a) >= (b) ? (a) : (b))
+#endif // !max
+
 // copy
 template <typename type>
 static inline void memcopy(type* dest, const type* source, size_t size) {

@@ -12,6 +12,11 @@
 #include <math.h>
 #include <new>
 
+
+// add config here
+static const size_t MAX_POINT_COUNT = 32;
+
+
 // add library here
 #include "misc.h"
 
