@@ -94,21 +94,21 @@ public:
 	}
 
 	// Flip this piece
-	inline Piece flip(const Piece& piece) const {
-		Point point[MAX_POINT_COUNT];
-		for (size_t i = 0; i < piece.size; i++) {
-			point[i] = Point(-piece.points[i].x, piece.points[i].y);
+	inline Piece flip() const {
+		Point points_out[MAX_POINT_COUNT];
+		for (size_t i = 0; i < size; i++) {
+			points_out[i] = Point(-points[i].x, points[i].y);
 		}
-		return Piece(point, piece.size);
+		return Piece(points_out, size);
 	}
 
 	// Rotate the piece 90 degree counter-clockwise
-	inline Piece rotate(const Piece& piece) const {
-		Point points[MAX_POINT_COUNT];
-		for (size_t i = 0; i < piece.size; i++) {
-			points[i] = Point(piece.points[i].y, -piece.points[i].x);
+	inline Piece rotate() const {
+		Point points_out[MAX_POINT_COUNT];
+		for (size_t i = 0; i < size; i++) {
+			points_out[i] = Point(points[i].y, -points[i].x);
 		}
-		return Piece(points, piece.size);
+		return Piece(points_out, size);
 	}
 };
 
