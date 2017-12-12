@@ -3,23 +3,24 @@
 
 class Game {
 protected:
+	// Piece data ==========
 	struct PieceState {
 		size_t id;
 		size_t state_count;
 		Piece state[8];
 	};
 	struct PieceData {
-		// Piece data ==========
 		size_t piece_count;
 		PieceState* piece;
 	};
+	PieceData game;
+
 	// Board data ==========
 	size_t board_id;
 	Board board;
-
-	PieceData game;
 	
 protected:
+	// read Board and Piece(s) from file
 	bool readFile(const char* filename) {
 		Point point[MAX_POINT_COUNT];
 
@@ -62,28 +63,62 @@ protected:
 		return true;
 	}
 
-	static void rotatePiece(PieceState& piece);
+private:
+	// generate all states of all pieces
+	static inline bool isStateExist(const Piece* state, size_t state_count, const Piece& piece) {
+		for (size_t i = 0; i < state_count; i++) {
+			if (piece == state[i]) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+protected:
+	// generate all states of all pieces
+	static void generatePieceState(PieceState& piece_state) {
+		// generate rotation of initPiece
+		Piece piece_tmp = piece_state.state[0];
+		for (size_t i = 1; i < 4; i++) {
+			piece_tmp = piece_tmp.rotate();
+			if (isStateExist(piece_state.state, piece_state.state_count, piece_tmp)) {
+				piece_state.state[piece_state.state_count] = piece_tmp;
+				piece_state.state_count++;
+			} else {
+				break;
+			}
+		}
+		// generate rotation of flipped piece
+		piece_tmp = piece_tmp.flip();
+		for (size_t i = 0; i < 4; i++) {
+			piece_tmp = piece_tmp.rotate();
+			if (isStateExist(piece_state.state, piece_state.state_count, piece_tmp)) {
+				piece_state.state[piece_state.state_count] = piece_tmp;
+				piece_state.state_count++;
+			} else {
+				break;
+			}
+		}
+	}
 
 public:
 	Game() {}
 	~Game() {}
 
+	// wake up and do things
 	bool startup() {
-		if (readFile("input_1.txt") == false) {
-			return false;
+		if (readFile("input_1.txt")) {
+			for (size_t piece_index = 0; piece_index < game.piece_count; piece_index++) {
+				generatePieceState(game.piece[piece_index]);
+			}
+			return true;
 		}
-		for (size_t piece_index = 0; piece_index < game.piece_count; piece_index++) {
-			rotatePiece(game.piece[piece_index]);
-		}
+		return false;
 	}
 
 	void run() {
 		// TODO: implement this @thanhminhmr
 	}
 };
-
-void Game::rotatePiece(PieceState& piece) {
-	// TODO: implement this
-}
 
 #endif // !_GAME_H_

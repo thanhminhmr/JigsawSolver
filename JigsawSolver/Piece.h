@@ -82,7 +82,7 @@ public:
 	inline bool operator!=(const Piece& piece) const {
 		return isIdentical(points, piece.points, size) == false;
 	}
-
+	
 	// check if Piece a can contain Piece b
 	inline bool isContainable(const Piece& piece, const Vector& position) const {
 		return isContainable(points, size, piece.points, piece.size, position);
