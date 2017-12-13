@@ -24,8 +24,8 @@ protected:
 	static inline bool isIdentical(const Point* points_a, const Point* points_b, size_t size);
 
 private:
-	// Check if line segment AB and ray Cx intersect
-	static inline int isRayIntersect(const Point& a, const Point& b, const Point& c);
+	// Count if line segment AB and ray Cx intersect, return true if C is between A and B
+	static inline bool isOnSegment(const Point& a, const Point& b, const Point& c, size_t& intersect_count);
 
 	// Check if point inside the piece
 	static inline bool isPointInside(const Point* points, size_t size, const Point& point);
@@ -82,7 +82,7 @@ public:
 	inline bool operator!=(const Piece& piece) const {
 		return isIdentical(points, piece.points, size) == false;
 	}
-	
+
 	// check if Piece a can contain Piece b
 	inline bool isContainable(const Piece& piece, const Vector& position) const {
 		return isContainable(points, size, piece.points, piece.size, position);
@@ -170,29 +170,44 @@ inline bool Piece::isIdentical(const Point* points_a, const Point* points_b, siz
 	return false;
 }
 
-// Check if line segment AB and ray Cx intersect
-inline int Piece::isRayIntersect(const Point& a, const Point& b, const Point& c) {
+// Count if line segment AB and ray Cx intersect, return true if C is between A and B
+inline bool Piece::isOnSegment(const Point& a, const Point& b, const Point& c, size_t& intersect_count) {
 	if (c.y < min(a.y, b.y) || c.y > max(a.y, b.y) || c.x > max(a.x, b.x)) {
-		// Cx is above, below or on the left side of AB
-		return 0;
+		// Cx is above, below or on the right side of AB
+	} else {
+		// equation of line AB, test with C
+		int tmp = (a.y - b.y) * (c.x - a.x) + (b.x - a.x) * (c.y - a.y);
+		if ((tmp < 0 && (a.y > b.y)) || (tmp > 0 && (a.y < b.y))) {
+			// Cx is on the left side of AB
+			intersect_count += (c.y == a.y || c.y == b.y) ? 1 : 2;
+		} else if (tmp == 0) {
+			// Cx is on the same line with AB
+			if (c.x < min(a.x, b.x)) {
+				// Cx is on the left side of AB
+				// in this case, we don't count an intersect
+				return false;
+			} else {
+				// C is between A and B
+				return true;
+			}
+		}
 	}
-	if (c.x <= min(a.x, b.x)) {
-		// Cx is on the right side of AB
-		return (c.y == a.y || c.y == b.y) ? 1 : 2;
-	}
-	if ((a.y - b.y) * c.x <= a.y * b.x - a.x * b.y - (b.x - a.x) * c.y) {
-		// Cx intersect with AB
-		return (c.y == a.y || c.y == b.y) ? 1 : 2;
-	}
-	return 0;
+	return false;
 }
 
 // Check if point inside the piece
 inline bool Piece::isPointInside(const Point* points, size_t size, const Point& point) {
 	assert(size < 3);
-	size_t count = isRayIntersect(points[0], points[size - 1], point);
+	size_t count = 0; 
+	if (isOnSegment(points[size - 1], points[0], point, count)) {
+		// on segment => inside piece
+		return true;
+	}
 	for (size_t i = 1; i < size; i++) {
-		count += isRayIntersect(points[i - 1], points[i], point);
+		if (isOnSegment(points[i - 1], points[i], point, count)) {
+			// on segment => inside piece
+			return true;
+		}
 	}
 	return (count & 2) != 0;
 }
