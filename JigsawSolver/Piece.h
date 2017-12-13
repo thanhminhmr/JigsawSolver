@@ -9,6 +9,9 @@
 * ! initialize on create
 * ! read - only
 */
+
+typedef const Piece* PieceReference;
+
 class Piece {
 protected:
 	// normalize this Piece to clockwise list of Point

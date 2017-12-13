@@ -22,7 +22,7 @@ protected:
 protected:
 	// read Board and Piece(s) from file
 	bool readFile(const char* filename) {
-		Point point[MAX_POINT_COUNT];
+		Point points[MAX_POINT_COUNT];
 
 		FILE *fin = fopen(filename, "rb");
 		if (fin == NULL) {
@@ -43,9 +43,9 @@ protected:
 			for (size_t j = 0; j < point_count; j += 1) {
 				size_t x, y;
 				fscanf(fin, "%zu%zu", &x, &y);
-				point[j] = Point(x, y);
+				points[j] = Point(x, y);
 			}
-			game.piece[i].state[0] = Piece(point, point_count);
+			game.piece[i].state[0] = Piece(points, point_count);
 		}
 
 		// read Board ==========
@@ -54,9 +54,9 @@ protected:
 		for (size_t j = 0; j < point_count; j += 1) {
 			size_t x, y;
 			fscanf(fin, "%zu%zu", &x, &y);
-			point[j] = Point(x, y);
+			points[j] = Point(x, y);
 		}
-		Piece piece(point, point_count, false);
+		Piece piece(points, point_count, false);
 		board = Board(&piece, 1);
 
 		fclose(fin);
