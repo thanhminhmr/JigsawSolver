@@ -38,6 +38,13 @@ public:
 		new(this) Board(board);
 	}
 
+protected:
+	// subtract two Piece, return number of new Piece created, write to array of Piece
+	inline size_t subtract(Piece* pieces_out,
+		const Point* big_piece_points, size_t big_piece_size, size_t big_piece_index,
+		const Point* small_piece_points, size_t small_piece_size, size_t small_piece_index);
+
+public:
 	// subtract Piece from Board, return new Board
 	inline Board subtract(size_t index, const Piece& piece, const Vector& position) const;
 };
@@ -48,4 +55,12 @@ inline Board Board::subtract(size_t index, const Piece& piece, const Vector& pos
 	// TODO: implement this
 	return Board();
 }
+
+// subtract two Piece, return number of new Piece created, write to array of Piece
+inline size_t Board::subtract(Piece* pieces_out,
+	const Point* big_piece_points, size_t big_piece_size, size_t big_piece_index,
+	const Point* small_piece_points, size_t small_piece_size, size_t small_piece_index) {
+	// TODO: implement this
+}
+
 #endif // !_BOARD_H_
