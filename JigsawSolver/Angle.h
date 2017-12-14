@@ -45,7 +45,7 @@ public:
 		// atan2(y, x) or atan2(sin, cos)
 		float angle = atan2f((float) det, (float) dot);
 		// convert [-pi, +pi] to [0, 2 * pi)
-		return (angle >= 0.0f) ? angle : (2.0f * M_PI - angle);
+		return (angle >= 0.0f) ? angle : (2.0f * (float) M_PI - angle);
 	}
 };
 

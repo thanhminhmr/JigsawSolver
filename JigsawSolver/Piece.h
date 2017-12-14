@@ -9,9 +9,6 @@
 * ! initialize on create
 * ! read - only
 */
-
-typedef const Piece* PieceReference;
-
 class Piece {
 protected:
 	// normalize this Piece to clockwise list of Point
@@ -28,7 +25,7 @@ protected:
 
 private:
 	// Count if line segment AB and ray Cx intersect, return true if C is between A and B
-	static inline bool isOnSegment(const Point& a, const Point& b, const Point& c, size_t& intersect_count);
+	static inline bool isOnSegmentAndCountIntersect(const Point& a, const Point& b, const Point& c, size_t& intersect_count);
 
 	// Check if point inside the piece
 	static inline bool isPointInside(const Point* points, size_t size, const Point& point);
@@ -115,6 +112,8 @@ public:
 	}
 };
 
+typedef const Piece* PieceReference;
+
 // normalize this Piece to clockwise list of Point (in_place safe)
 inline void Piece::normalizeClockwise(Point* point_out, const Point* point_in, size_t size) {
 	int32_t sum = ((int32_t) point_in[0].x - (int32_t) point_in[size - 1].x)
@@ -138,10 +137,8 @@ inline void Piece::normalizePosition(Point* point_out, const Point* point_in, si
 	int16_t left = point_in[0].x;
 	int16_t top = point_in[0].y;
 	for (size_t i = 0; i < size; i++) {
-		// if (highest < point_out[i].y) highest = point_out[i].y;
-		top = (top < point_in[i].y) ? point_in[i].y : top;
-		// if (left < point_out[i].x) left = point_out[i].x;
-		left = (left < point_in[i].x) ? point_in[i].x : left;
+		top = (top > point_in[i].y) ? point_in[i].y : top;
+		left = (left > point_in[i].x) ? point_in[i].x : left;
 	}
 	Vector delta(-left, -top);
 	for (size_t i = 0; i < size; i++) {
@@ -174,7 +171,7 @@ inline bool Piece::isIdentical(const Point* points_a, const Point* points_b, siz
 }
 
 // Count if line segment AB and ray Cx intersect, return true if C is between A and B
-inline bool Piece::isOnSegment(const Point& a, const Point& b, const Point& c, size_t& intersect_count) {
+inline bool Piece::isOnSegmentAndCountIntersect(const Point& a, const Point& b, const Point& c, size_t& intersect_count) {
 	if (c.y < min(a.y, b.y) || c.y > max(a.y, b.y) || c.x > max(a.x, b.x)) {
 		// Cx is above, below or on the right side of AB
 	} else {
@@ -202,12 +199,12 @@ inline bool Piece::isOnSegment(const Point& a, const Point& b, const Point& c, s
 inline bool Piece::isPointInside(const Point* points, size_t size, const Point& point) {
 	assert(size < 3);
 	size_t count = 0; 
-	if (isOnSegment(points[size - 1], points[0], point, count)) {
+	if (isOnSegmentAndCountIntersect(points[size - 1], points[0], point, count)) {
 		// on segment => inside piece
 		return true;
 	}
 	for (size_t i = 1; i < size; i++) {
-		if (isOnSegment(points[i - 1], points[i], point, count)) {
+		if (isOnSegmentAndCountIntersect(points[i - 1], points[i], point, count)) {
 			// on segment => inside piece
 			return true;
 		}

@@ -52,33 +52,158 @@ public:
 	}
 
 protected:
-	// subtract two Piece, return number of new Piece created, write to array of Piece
-	static inline size_t subtract(Piece* pieces_out,
-		const Point* big_piece_points, size_t big_piece_size, size_t big_piece_index,
-		const Point* small_piece_points, size_t small_piece_size, size_t small_piece_index);
+	// find line segment of Piece that contain Point
+	static inline size_t findIntersectSegment(const Point* points, size_t size, const Point& point);
+
+	// create new Piece with intersect another Point from another Piece
+	static inline size_t createIntersectPoints(Point* intersect_points, const Point* points_a, size_t size_a,
+		const Point* points_b, size_t size_b, const size_t* mask_b);
 
 public:
 	// subtract Piece from Board, return new Board
-	inline Board subtract(bool piece_from_ref, size_t board_piece_index, size_t board_point_index, 
+	inline Board subtract(bool piece_from_ref, size_t board_piece_index, size_t board_point_index,
 		const Piece& piece, size_t piece_point_index, const Vector& position) const;
 };
 
+// find line segment of Piece that contain Point
+inline size_t Board::findIntersectSegment(const Point* points, size_t size, const Point& point) {
+	if (points[size - 1] == point || points[0] == point) {
+		// vertex
+	} else if (Point::isOnSegment(points[size - 1], points[0], point)) {
+		return size - 1;
+	} else {
+		for (size_t index = 0; index < size - 1; index++) {
+			// check if point is on line segment points[index, index + 1]
+			if (points[index] == point || points[index + 1] == point) {
+				// vertex
+				break;
+			} else if (Point::isOnSegment(points[index], points[index + 1], point)) {
+				return index;
+			}
+		}
+	}
+	// not found
+	return size;
+}
+
+// create new Piece with intersect another Point from another Piece
+inline size_t Board::createIntersectPoints(Point* intersect_points, const Point* points_a, size_t size_a,
+	const Point* points_b, size_t size_b, const size_t* mask_b) {
+	size_t intersect_size = 0;
+	size_t index_a = 0;
+	size_t index_b = 0;
+	do {
+		if (mask_b[index_b] < size_b) {
+			while (index_a <= mask_b[index_b]) {
+				intersect_points[intersect_size] = points_a[index_a];
+				intersect_size += 1;
+				index_a += 1;
+			};
+			intersect_points[intersect_size] = points_b[index_b];
+			intersect_size += 1;
+		}
+		index_b += 1;
+	} while (index_b < size_b);
+
+	intersect_points[intersect_size] = points_a[0];
+	return intersect_size;
+}
+
 // subtract Piece from Board, return new Board
-inline Board Board::subtract(bool piece_from_ref, size_t board_piece_index, size_t board_point_index, 
+inline Board Board::subtract(bool piece_from_ref, size_t board_piece_index, size_t board_point_index,
 	const Piece& piece, size_t piece_point_index, const Vector& position) const {
 	assert(board_piece_index < size);
 	assert(board_point_index < MAX_POINT_COUNT);
-	// small Piece is here
-	Point small_piece_points[MAX_POINT_COUNT];
-	for (size_t i = 0; i < piece.size; i++) {
-		small_piece_points[i] = position.move(piece.points[i]);
+
+	// ===== Create Point Array
+	const Piece& big_piece = piece_from_ref ? *piecerefs[board_piece_index] : pieces[board_piece_index];
+	Point big_points[MAX_POINT_COUNT];
+	Point small_points[MAX_POINT_COUNT];
+	size_t big_size = 0;
+	size_t small_size = 0;
+	// big Piece is here
+	for (size_t i = board_point_index + 1; i < big_piece.size; i++) {
+		big_points[big_size] = big_piece.points[i];
+		big_size += 1;
 	}
-	// do things and put new Piece(s) here
+	for (size_t i = 0; i <= board_point_index; i++) {
+		big_points[big_size] = big_piece.points[i];
+		big_size += 1;
+	}
+	// small Piece is here
+	for (size_t i = piece_point_index + 1; i < piece.size; i++) {
+		small_points[small_size] = position.move(piece.points[i]);
+		small_size += 1;
+	}
+	for (size_t i = 0; i <= piece_point_index; i++) {
+		small_points[small_size] = position.move(piece.points[i]);
+		small_size += 1;
+	}
+
+	// ===== Create Intersect Mask Array
+	size_t big_mask[MAX_POINT_COUNT];
+	size_t small_mask[MAX_POINT_COUNT];
+	// big mask array, mask if Point of big_piece on small_piece line segment
+	for (size_t big_index = 0; big_index < big_size; big_index++) {
+		big_mask[big_index] = findIntersectSegment(small_points, small_size, big_points[big_index]);
+	}
+	// small mask array, mask if Point of small_piece on big_piece line segment
+	for (size_t small_index = 0; small_index < small_size; small_index++) {
+		small_mask[small_index] = findIntersectSegment(big_points, big_size, small_points[small_index]);
+	}
+
+	// ===== Create Intersect Points
+	Point big_intersect_points[MAX_POINT_COUNT];
+	Point small_intersect_points[MAX_POINT_COUNT];
+	size_t big_intersect_size =
+		createIntersectPoints(big_intersect_points, big_points, big_size,
+			small_points, small_size, small_mask);
+	size_t small_intersect_size =
+		createIntersectPoints(small_intersect_points, small_points, small_size,
+			big_points, big_size, big_mask);
+
+	// ===== Fight!
 	Piece pieces_out[MAX_PIECE_COUNT];
-	size_t size_out = subtract(pieces_out,
-		pieces[board_piece_index].points, pieces[board_piece_index].size, board_point_index,
-		small_piece_points, piece.size, piece_point_index);
-	// put PieceReference and return here
+	size_t size_out = 0;
+
+	size_t big_index = 0;
+	size_t small_index = 0;
+	do {
+		// skip perfect match
+		while (big_index < big_intersect_size &&  big_intersect_points[big_index + 1] == small_intersect_points[small_index + 1]) {
+			big_index += 1;
+			small_index += 1;
+		}
+		if (big_index == big_intersect_size) {
+			// done
+			break;
+		}
+		// create new piece
+		Point points_out[MAX_POINT_COUNT];
+		size_t point_size_out = 0;
+		size_t big_end = 0;
+		do {
+			points_out[point_size_out] = small_intersect_points[small_index];
+			point_size_out += 1;
+			small_index += 1;
+			for (size_t big_scan = big_index + 1; big_scan <= big_intersect_size; big_scan++) {
+				if (small_intersect_points[small_index] == big_intersect_points[big_scan]) {
+					big_end = big_scan;
+					break;
+				}
+			}
+		} while (big_end == 0);
+		for (size_t big_scan = big_end; big_scan > big_index; big_scan--) {
+			points_out[point_size_out] = big_intersect_points[big_scan];
+			point_size_out += 1;
+		}
+		big_index = big_end;
+
+		pieces_out[size_out] = Piece(points_out, point_size_out);
+		size_out += 1;
+	} while (true);
+
+	// ===== put PieceReference and return here
 	PieceReference piecerefs_out[MAX_PIECEREF_COUNT];
 	size_t refsize_out = 0;
 	if (piece_from_ref) {
@@ -109,13 +234,6 @@ inline Board Board::subtract(bool piece_from_ref, size_t board_piece_index, size
 		}
 	}
 	return Board(pieces_out, size_out, piecerefs_out, refsize_out);
-}
-
-// subtract two Piece, return number of new Piece created, write to array of Piece
-inline size_t Board::subtract(Piece* pieces_out,
-	const Point* big_piece_points, size_t big_piece_size, size_t big_piece_index,
-	const Point* small_piece_points, size_t small_piece_size, size_t small_piece_index) {
-	// TODO: implement this
 }
 
 #endif // !_BOARD_H_

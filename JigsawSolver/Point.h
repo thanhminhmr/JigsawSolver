@@ -38,6 +38,17 @@ public:
 	inline bool operator!=(const Point& point) const {
 		return data != point.data;
 	}
+
+public:
+	// Check if point C is on line AB
+	static inline bool isOnLine(const Point& a, const Point& b, const Point& c) {
+		return ((a.y - b.y) * (c.x - a.x) + (b.x - a.x) * (c.y - a.y)) == 0;
+	}
+
+	// Check if point C in in line segment AB
+	static inline bool isOnSegment(const Point& a, const Point& b, const Point& c) {
+		return (c.y >= min(a.y, b.y) && c.y <= max(a.y, b.y) && c.x >= min(a.x, b.x) && c.x <= max(a.x, b.x)) && isOnLine(a, b, c);
+	}
 };
 
 #endif // !_POINT_H_
