@@ -110,6 +110,15 @@ public:
 		}
 		return Piece(points_out, size);
 	}
+
+	// move
+	inline Piece move(const Vector& position) const {
+		Point points_out[MAX_POINT_COUNT];
+		for (size_t i = 0; i < size; i++) {
+			points_out[i] = position.move(points[i]);
+		}
+		return Piece(points_out, size, false);
+	}
 };
 
 typedef const Piece* PieceReference;
@@ -197,7 +206,7 @@ inline bool Piece::isOnSegmentAndCountIntersect(const Point& a, const Point& b, 
 
 // Check if point inside the piece
 inline bool Piece::isPointInside(const Point* points, size_t size, const Point& point) {
-	assert(size < 3);
+	assert(size >= 3);
 	size_t count = 0; 
 	if (isOnSegmentAndCountIntersect(points[size - 1], points[0], point, count)) {
 		// on segment => inside piece

@@ -19,6 +19,22 @@ protected:
 	size_t board_id;
 	Board board;
 	
+	// Progress data =======
+	struct PiecePlace {
+		size_t id;
+		Piece piece;
+	};
+	struct PieceProgress {
+		size_t step;
+		size_t count;
+		PiecePlace* place;
+		bool* mask;
+
+		size_t board_id;
+		const Board* board;
+	};
+	PieceProgress progress;
+	
 protected:
 	// read Board and Piece(s) from file
 	bool readFile(const char* filename) {
@@ -62,39 +78,7 @@ protected:
 		fclose(fin);
 		return true;
 	}
-
-	bool writeFile(const char* filename) {
-		FILE *fout = fopen(filename, "w");
-		if (fout == NULL) {
-			printf("Unable to open file.\n");
-			return false;
-		}
-
-		// read Piece ==========
-		fprintf(fout, "%zu\n", game.piece_count);
-		for (size_t i = 0; i < game.piece_count; i += 1) {
-			for (size_t k = 0; k < game.piece[i].state_count; k++) {
-				fprintf(fout, "%zu %zu ", game.piece[i].id, game.piece[i].state[k].size);
-				for (size_t j = 0; j < game.piece[i].state[k].size; j += 1) {
-					fprintf(fout, "%d %d ", game.piece[i].state[k].points[j].x, game.piece[i].state[k].points[j].y);
-				}
-				fprintf(fout, "\n");
-			}
-			fprintf(fout, "\n");
-		}
-		fprintf(fout, "\n");
-
-		// read Board ==========
-		fprintf(fout, "%zu %zu ", board_id, board.pieces[0].size);
-		for (size_t j = 0; j < board.pieces[0].size; j += 1) {
-			fprintf(fout, "%d %d ", board.pieces[0].points[j].x, board.pieces[0].points[j].y);
-		}
-
-		fclose(fout);
-		return true;
-	}
-
-
+		
 private:
 	// generate all states of all pieces
 	static inline bool isStateExist(const Piece* state, size_t state_count, const Piece& piece) {
@@ -143,6 +127,12 @@ public:
 			for (size_t piece_index = 0; piece_index < game.piece_count; piece_index++) {
 				generatePieceState(game.piece[piece_index]);
 			}
+			progress.step = 0;
+			progress.count = 0;
+			progress.place = memalloc<PiecePlace>(game.piece_count);
+			progress.mask = memalloc<bool>(game.piece_count);
+			progress.board_id = board_id;
+			progress.board = &board;
 			return true;
 		}
 		return false;
@@ -150,7 +140,130 @@ public:
 
 	void run() {
 		// TODO: implement this @thanhminhmr
+		for (size_t i = 0; i < game.piece_count; i++) {
+			progress.mask[i] = false;
+		}
+		if (loop(game, progress, board)) {
+			writeProgress("output.txt", progress);
+		}
 	}
-};
 
+
+	static bool writeProgress(const char* filename, const PieceProgress& progress) {
+		FILE *fout = fopen(filename, "w");
+		if (fout == NULL) {
+			printf("Unable to open file.\n");
+			return false;
+		}
+
+		// write Piece ==========
+		fprintf(fout, "%zu\n", progress.count);
+		for (size_t i = 0; i < progress.count; i += 1) {
+			fprintf(fout, "%zu %zu ", progress.place[i].id, progress.place[i].piece.size);
+			for (size_t j = 0; j < progress.place[i].piece.size; j += 1) {
+				fprintf(fout, "%d %d ", progress.place[i].piece.points[j].x, progress.place[i].piece.points[j].y);
+			}
+			fprintf(fout, "\n");
+		}
+		fprintf(fout, "\n");
+
+		// write Board ==========
+		fprintf(fout, "%zu %zu ", progress.board_id, progress.board->pieces[0].size);
+		for (size_t j = 0; j < progress.board->pieces[0].size; j += 1) {
+			fprintf(fout, "%d %d ", progress.board->pieces[0].points[j].x, progress.board->pieces[0].points[j].y);
+		}
+
+		fclose(fout);
+		return true;
+	}
+
+	static bool writeProgress(size_t count, const PieceProgress& progress) {
+		char filename[32];
+		snprintf(filename, 31, "output_%zu.txt", count);
+		FILE *fout = fopen(filename, "w");
+		if (fout == NULL) {
+			printf("Unable to open file.\n");
+			return false;
+		}
+
+		// write Piece ==========
+		fprintf(fout, "%zu\n", progress.count);
+		for (size_t i = 0; i < progress.count; i += 1) {
+			fprintf(fout, "%zu %zu ", progress.place[i].id, progress.place[i].piece.size);
+			for (size_t j = 0; j < progress.place[i].piece.size; j += 1) {
+				fprintf(fout, "%d %d ", progress.place[i].piece.points[j].x, progress.place[i].piece.points[j].y);
+			}
+			fprintf(fout, "\n");
+		}
+		fprintf(fout, "\n");
+
+		// write Board ==========
+		fprintf(fout, "%zu %zu ", progress.board_id, progress.board->pieces[0].size);
+		for (size_t j = 0; j < progress.board->pieces[0].size; j += 1) {
+			fprintf(fout, "%d %d ", progress.board->pieces[0].points[j].x, progress.board->pieces[0].points[j].y);
+		}
+
+		fclose(fout);
+		return true;
+	}
+
+	static bool Game::loop(const PieceData& game, PieceProgress& progress, const Board& board);
+};
+//*
+bool Game::loop(const PieceData& game, PieceProgress& progress, const Board& board) {
+	// take the first Angle of Board
+	// TODO: take the smallest Angle of Board, if needed. @thanhminhmr
+	bool piece_from_ref = (board.size == 0);
+	const Piece& board_piece = piece_from_ref ? *board.piecerefs[0] : board.pieces[0];
+	const Point& board_point = board_piece.points[0];
+	const Angle& board_angle = board_piece.angles[0];
+
+	// find the suitable Piece
+	for (size_t piece_index = 0; piece_index < game.piece_count; piece_index++) {
+		if (progress.mask[piece_index] == false) {
+			progress.mask[piece_index] = true;
+
+			const PieceState& piece_state = game.piece[piece_index];
+
+			// find the suitable PieceState
+			for (size_t state_index = 0; state_index < piece_state.state_count; state_index++) {
+				const Piece& piece = piece_state.state[state_index];
+
+				// find the suitable Angle
+				for (size_t angle_index = 0; angle_index < piece.size; angle_index++) {
+					const Point &piece_point = piece.points[angle_index];
+					const Angle &piece_angle = piece.angles[angle_index];
+					if (board_angle.start == piece_angle.start) {
+						// check if Board is subtractable
+						Vector position(piece_point, board_point);
+						if (board_piece.isContainable(piece, position)) {
+							progress.place[progress.count].id = piece_state.id;
+							progress.place[progress.count].piece = piece.move(position);
+							progress.count += 1;
+							progress.step += 1;
+							if (progress.step & 255 == 0) {
+								printf("%zu %zu\n", progress.step, progress.count);
+								writeProgress(progress.step, progress);
+							}
+							if (progress.count == game.piece_count) {
+								// done
+								return true;
+							} else {
+								Board new_board = board.subtract(false, 0, 0, piece, angle_index, position);
+								if (loop(game, progress, new_board)) {
+									return true;
+								}
+							}
+							progress.count -= 1;
+						}
+					}
+				}
+			}
+
+			progress.mask[piece_index] = false;
+		}
+	}
+	return false;
+}
+//*/
 #endif // !_GAME_H_

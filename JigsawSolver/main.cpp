@@ -5,10 +5,9 @@
 // tip, edit the next line to //* to see the magic
 //*
 int main() {
-	Point C(6, 2);
-	Point A(1, 1);
-	Point B(2, 4);
-	printf("%08X %08X %08X\n", &C.data, &C.x, &C.y);
+	Game game;
+	game.startup();
+	game.run();
 
 	//Angle angle(B, A, C);
 	//return printf("%f", angle.toRad());

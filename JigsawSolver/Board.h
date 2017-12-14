@@ -104,7 +104,11 @@ inline size_t Board::createIntersectPoints(Point* intersect_points, const Point*
 		}
 		index_b += 1;
 	} while (index_b < size_b);
-
+	while (index_a < size_a) {
+		intersect_points[intersect_size] = points_a[index_a];
+		intersect_size += 1;
+		index_a += 1;
+	};
 	intersect_points[intersect_size] = points_a[0];
 	return intersect_size;
 }
